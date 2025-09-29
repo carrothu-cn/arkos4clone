@@ -82,8 +82,6 @@ sudo cp -f ./replace_file/es_systems.cfg "$MOUNT_DIR/root/etc/emulationstation/"
 sudo chmod 777 "$MOUNT_DIR/root/etc/emulationstation/es_systems.cfg" 2>/dev/null || true
 sudo cp -f ./replace_file/emulationstation2.po "$MOUNT_DIR/root/usr/bin/emulationstation/resources/locale/zh-CN/"
 
-echo "== 注入 portmaster =="
-sudo cp -rf ./PortMaster/* "$MOUNT_DIR/root/opt/system/Tools/PortMaster/"
 
 echo "== 复制 roms.tar 出来操作 =="
 sudo cp "$MOUNT_DIR/root/roms.tar" /home/lcdyk/arkos/
@@ -92,6 +90,9 @@ tar -xf /home/lcdyk/arkos/roms.tar -C /home/lcdyk/arkos/tmproms
 mkdir -p /home/lcdyk/arkos/tmproms/roms/hbmame
 tar -xf zulu11.48.21-ca-jdk11.0.11-linux_aarch64.tar.gz -C /home/lcdyk/arkos/tmproms/roms/j2me
 mv /home/lcdyk/arkos/tmproms/roms/j2me/zulu11.48.21-ca-jdk11.0.11-linux_aarch64 /home/lcdyk/arkos/tmproms/roms/j2me/jdk
+echo "== 注入 portmaster =="
+sudo cp -rf ./PortMaster/* "/home/lcdyk/arkos/tmproms/roms/tools/PortMaster/"
+sudo cp -rf ./PortMaster/PortMaster.sh "/home/lcdyk/arkos/tmproms/roms/tools/PortMaster.sh"
 sudo tar -cf /home/lcdyk/arkos/roms.tar -C /home/lcdyk/arkos/tmproms .
 rm -rf /home/lcdyk/arkos/tmproms
 sudo cp /home/lcdyk/arkos/roms.tar "$MOUNT_DIR/root/"

@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Test
-# if [[ -w /dev/tty1 ]]; then
-#   exec > /dev/tty1 2>&1
-# fi
-
 # =============== DTB -> LABEL 映射（按你的表）===============
 # 从 /boot/boot.ini 中匹配：load mmc 1:1 ${dtb_loadaddr} <DTB>
 BOOTINI="/boot/boot.ini"
@@ -33,6 +28,7 @@ declare -A dtb2label=(
   [rk3326-r36plus-linux.dtb]=r36splus
   [rk3326-r36sclonev20-linux.dtb]=clone719m
   [rk3326-k36p7-linux.dtb]=k36panel7
+  [rk3326-a10mini-linux.dtb]=a10mini
 )
 declare -A console_profile=(
   [r36s]=480p
@@ -51,6 +47,26 @@ declare -A console_profile=(
   [r36splus]=720p
   [clone719m]=480p
   [k36panel7]=480p
+  [a10mini]=480p
+)
+declare -A joy_conf_map=(
+  [r36s]=dual
+  [mymini]=single
+  [xf35h]=dual
+  [r36pro]=dual
+  [k36s]=single
+  [hg36]=dual
+  [rx6h]=dual
+  [r36max]=dual
+  [xf40h]=dual
+  [xf40v]=dual
+  [r36ultra]=dual
+  [g80cambv12]=dual
+  [r46h]=dual
+  [r36splus]=dual
+  [clone719m]=dual
+  [k36panel7]=dual
+  [a10mini]=none
 )
 declare -A ogage_conf_map=(
   [r36s]=happy5
@@ -69,20 +85,14 @@ declare -A ogage_conf_map=(
   [r36splus]=happy5
   [clone719m]=happy5
   [k36panel7]=happy5
+  [a10mini]=happy5
   # 按需增删：  [机型]=select|mode
 )
 rk915_set=("xf40h" "xf40v" "xf35h" "r36ultra" "k36s")   # 按需增删
 LABEL="${dtb2label[$DTB]:-r36s}"   # 默认 r36s
 # =============== 路径配置（可按需调整）===============
-SRC_CONSOLES_DIR="/boot/consoles/files"               # 源机型库
 QUIRKS_DIR="/home/ark/.quirks"                  # 目标机型库
 CONSOLE_FILE="/boot/.console"                   # 当前生效机型标记
-ES_CFG_NAME="es_input.cfg"                      # 位于每个机型目录
-RETRO64_NAME="retroarch64.cfg"                  # 位于每个机型目录
-RETRO32_NAME="retroarch32.cfg"                  # 位于每个机型目录
-PAD_NAME="pad.txt"                              # 位于每个机型目录
-FIXPAD_PATH="$QUIRKS_DIR/fix_pad.sh"            # 你的 fix_pad.sh 所在处
-
 # =============== 小工具函数（英文输出 / 中文注释）===============
 msg()  { echo "[clone.sh] $*"; }
 warn() { echo "[clone.sh][WARN] $*" >&2; }
@@ -115,98 +125,84 @@ cp_if_exists() {
   fi
 }
 
-apply_ogage_conf() {
-  local dtbval="$1" kind conf
+apply_hotkey_conf() {
+  local dtbval="$1" kind ogage_conf ra_conf ra32_conf
   # 键不存在时，kind 为空串（避免 set -u 爆炸）
   kind="${ogage_conf_map[$dtbval]-}"
 
   case "$kind" in
-    select) conf="$QUIRKS_DIR/ogage.select.conf" ;;
-    happy5)   conf="$QUIRKS_DIR/ogage.happy5.conf" ;;
-    *)      conf="" ;;
+    select) 
+      ogage_conf="$QUIRKS_DIR/ogage.select.conf" 
+      ra_conf="$QUIRKS_DIR/retroarch.select"
+      ra32_conf="$QUIRKS_DIR/retroarch32.select"
+      ;;
+    happy5)   
+      ogage_conf="$QUIRKS_DIR/ogage.happy5.conf" 
+      ra_conf="$QUIRKS_DIR/retroarch.happy5"
+      ra32_conf="$QUIRKS_DIR/retroarch32.happy5"
+      ;;
+    *)
+      ogage_conf="" 
+      ra_conf=""
+      ra32_conf=""
+      ;;
   esac
 
-  if [[ -n "$conf" ]]; then
-    msg "change hotkey: $dtbval -> $(basename "$conf")"
-    cp_if_exists "$conf" "/home/ark/ogage.conf" "yes"
+  if [[ -n "$ogage_conf" ]]; then
+    msg "change hotkey: $dtbval -> $(basename "$ogage_conf")"
+    cp_if_exists "$ogage_conf" "/home/ark/ogage.conf" "yes"
+  else
+    msg "hotkey unchanged for: $dtbval (no mapping)"
+  fi
+  if [[ -n "$ra_conf" ]]; then
+    msg "change hotkey: $dtbval -> $(basename "$ra_conf")"
+    cp_if_exists "$ra_conf" "/home/ark/.config/retroarch/retroarch.cfg" "yes"
+  else
+    msg "hotkey unchanged for: $dtbval (no mapping)"
+  fi
+  if [[ -n "$ra32_conf" ]]; then
+    msg "change hotkey: $dtbval -> $(basename "$ra32_conf")"
+    cp_if_exists "$ra32_conf" "/home/ark/.config/retroarch32/retroarch.cfg" "yes"
   else
     msg "hotkey unchanged for: $dtbval (no mapping)"
   fi
 }
 
+adjust_per_joy_conf() {
+  local dtbval="$1" kind conf
+  # 键不存在时，kind 为空串（避免 set -u 爆炸）
+  prof="${joy_conf_map[$dtbval]-}"
+  case "$prof" in
+    none|single)
+      cp_if_exists "$QUIRKS_DIR/noneJoy/controls.ini" "/roms/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes"
+      cp_if_exists "$QUIRKS_DIR/noneJoy/ppsspp.ini" "/roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini" "yes"
+      cp_if_exists "$QUIRKS_DIR/noneJoy/ppsspp.ini.sdl" "/roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl" "yes"
+      cp_if_exists "$QUIRKS_DIR/noneJoy/drastic.cfg" "/opt/drastic/config/drastic.cfg" "yes"
+      [[ -d "/roms2/psp" ]] && cp_if_exists "$QUIRKS_DIR/noneJoy/controls.ini" "/roms2/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes" || true
+      [[ -d "/roms2/psp" ]] && cp_if_exists "$QUIRKS_DIR/noneJoy/ppsspp.ini" "/roms2/psp/ppsspp/PSP/SYSTEM/ppsspp.ini" "yes" || true
+      [[ -d "/roms2/psp" ]] && cp_if_exists "$QUIRKS_DIR/noneJoy/ppsspp.ini.sdl" "/roms2/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl" "yes" || true
+      ;;
+    dual)
+      cp_if_exists "$QUIRKS_DIR/dualJoy/controls.ini" "/roms/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes"
+      cp_if_exists "$QUIRKS_DIR/dualJoy/ppsspp.ini" "/roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini" "yes"
+      cp_if_exists "$QUIRKS_DIR/dualJoy/ppsspp.ini.sdl" "/roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl" "yes"
+      cp_if_exists "$QUIRKS_DIR/dualJoy/drastic.cfg" "/opt/drastic/config/drastic.cfg" "yes"
+      [[ -d "/roms2/psp" ]] && cp_if_exists "$QUIRKS_DIR/dualJoy/controls.ini" "/roms2/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes" || true
+      [[ -d "/roms2/psp" ]] && cp_if_exists "$QUIRKS_DIR/dualJoy/ppsspp.ini" "/roms2/psp/ppsspp/PSP/SYSTEM/ppsspp.ini" "yes" || true
+      [[ -d "/roms2/psp" ]] && cp_if_exists "$QUIRKS_DIR/dualJoy/ppsspp.ini.sdl" "/roms2/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl" "yes" || true
+      ;;
+    *) msg "No profile assets for: $prof" ;;
+  esac
+}
+
+
 # 依据 LABEL 执行“拷贝并运行 fix_pad”
 apply_quirks_for() {
   local dtbval="$1"
   local base="$QUIRKS_DIR/$dtbval"
-
-  # 若机型目录不存在，直接跳过（符合你的要求）
-  if [[ ! -d "$base" ]]; then
-    warn "Quirks dir not found: $base -> skip applying"
-    return 0
-  fi
-
-  msg "Applying quirks for: $dtbval"
-
-  # 1) es_input.cfg -> /etc/emulationstation/
-  # cp_if_exists "$base/$ES_CFG_NAME" "/etc/emulationstation" "no"
-
-  # # 2) udev/* -> 两个 autoconfig 目录
-  # local src_udev="$base/udev"
-  # if [[ -d "$src_udev" ]]; then
-  #   mkdir -p /home/ark/.config/retroarch/autoconfig/udev
-  #   mkdir -p /home/ark/.config/retroarch32/autoconfig/udev
-  #   cp_if_exists "$src_udev/." "/home/ark/.config/retroarch/autoconfig/udev" "no"
-  #   cp_if_exists "$src_udev/." "/home/ark/.config/retroarch32/autoconfig/udev" "no"
-  # else
-  #   warn "udev dir not found: $src_udev"
-  # fi
-
-  # # 3) retroarch64.cfg -> retroarch/retroarch.cfg
-  # cp_if_exists "$base/$RETRO64_NAME" "/home/ark/.config/retroarch/retroarch.cfg" "yes"
-
-  # # 4) retroarch32.cfg -> retroarch32/retroarch.cfg
-  # cp_if_exists "$base/$RETRO32_NAME" "/home/ark/.config/retroarch32/retroarch.cfg" "yes"
-
-  # # 5) controls.ini -> SYSTEM/controls.ini
-  # if [[ "$dtbval" == "r36s" ]]; then
-  #   cp_if_exists "$QUIRKS_DIR/controls.ini.r36s" "/opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/controls.ini" "yes"
-  #   [ -d "/roms/psp/ppsspp/PSP/SYSTEM" ] && cp_if_exists "$QUIRKS_DIR/controls.ini.r36s" "/roms/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes" || true
-  #   [ -d "/roms2/psp/ppsspp/PSP/SYSTEM" ] && cp_if_exists "$QUIRKS_DIR/controls.ini.r36s" "/roms2/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes" || true
-  # else
-  #   cp_if_exists "$QUIRKS_DIR/controls.ini.clone" "/opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/controls.ini" "yes"
-  #   [ -d "/roms/psp/ppsspp/PSP/SYSTEM" ] && cp_if_exists "$QUIRKS_DIR/controls.ini.clone" "/roms/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes"  || true
-  #   [ -d "/roms2/psp/ppsspp/PSP/SYSTEM" ] && cp_if_exists "$QUIRKS_DIR/controls.ini.clone" "/roms2/psp/ppsspp/PSP/SYSTEM/controls.ini" "yes" || true
-  # fi
-
-  # # 6) drastic.cfg -> /opt/drastic/config/drastic.cfg
-  # if [[ "$dtbval" == "r36s" ]]; then
-  #   cp_if_exists "$QUIRKS_DIR/drastic.cfg.r36s" "/opt/drastic/config/drastic.cfg" "yes"
-  # elif [[ "$dtbval" == "mymini" || "$dtbval" == "k36s" ]]; then
-  #   cp_if_exists "$QUIRKS_DIR/drastic.cfg.mymini" "/opt/drastic/config/drastic.cfg" "yes"
-  # else
-  #   cp_if_exists "$QUIRKS_DIR/drastic.cfg.clone" "/opt/drastic/config/drastic.cfg" "yes"
-  # fi
-
-  # # 7) fix_pad.sh
-  # if [[ -f "$FIXPAD_PATH" ]]; then
-  #   chmod +x "$FIXPAD_PATH" || warn "chmod failed on $FIXPAD_PATH"
-  #   local padfile="$base/$PAD_NAME"
-  #   if [[ -f "$padfile" ]]; then
-  #     msg "Start fix_pad $(date +'%F %T')"
-  #     if ! "$FIXPAD_PATH" "$padfile" / </dev/null; then
-  #       warn "fix_pad returned non-zero (ignored)"
-  #     fi
-  #     msg "End   fix_pad $(date +'%F %T')"
-  #   else
-  #     warn "pad.txt not found: $padfile (skip fix_pad)"
-  #   fi
-  # else
-  #   warn "fix_pad.sh not found: $FIXPAD_PATH"
-  # fi
-
-
-  # 8) fix ogage
-  apply_ogage_conf "$dtbval"
+  adjust_per_joy_conf "$dtbval"
+  apply_hotkey_conf "$dtbval"
+  copy_file
 }
 
 install_profile_assets() {
@@ -226,40 +222,11 @@ install_profile_assets() {
 copy_file() {
   [[ -f "$CONSOLE_FILE" ]] && cur_console="$(tr -d '\r\n' < "$CONSOLE_FILE")" || cur_console=""
   [[ -n "$cur_console" ]] && install_profile_assets "${console_profile[$cur_console]}"
-
-  # if [[ "$cur_console" == "r36s" ]]; then
-  #   cp_if_exists "/opt/351Files/351Files.r36s" "/opt/351Files/351Files" "yes"
-  # fi
-
-  # cp_if_exists "$QUIRKS_DIR/control.txt" "/opt/system/Tools/PortMaster/control.txt" "yes"
-}
-
-copt_add_libs() {
-  if [[ -d "/roms/ports/libs" ]]; then
-    cp_if_exists /roms/ports/libs /opt/system/Tools/PortMaster/libs "no"
-    sudo rm -rf /roms/ports/libs/
-  fi
 }
 
 
 # =============== 执行开始 ===============
 msg "DTB filename: ${DTB:-<empty>}, LABEL: $LABEL"
-
-# 先同步 /boot/consoles -> ~/.quirks（有 rsync 用 rsync）
-# 暂时不需要这个，构建包时手动添加
-# if [[ -d "$SRC_CONSOLES_DIR" ]]; then
-#   mkdir -p "$QUIRKS_DIR"
-#   if command -v rsync >/dev/null 2>&1; then
-#     rsync -a --delete "$SRC_CONSOLES_DIR"/ "$QUIRKS_DIR"/
-#   else
-#     cp -a "$SRC_CONSOLES_DIR"/. "$QUIRKS_DIR"/
-#   fi
-#   # 删除源目录（复制完成后）
-#   rm -rf "$SRC_CONSOLES_DIR"
-#   msg "Consoles synced to: $QUIRKS_DIR"
-# else
-#   warn "Consoles dir not found: $SRC_CONSOLES_DIR (continue)"
-# fi
 
 # 检测 /boot/fix_audio.sh 是否存在
 if [ -f "/boot/fix_audio.sh" ]; then
@@ -280,12 +247,10 @@ if [[ ! -f "$CONSOLE_FILE" ]]; then
   echo "$LABEL" > "$CONSOLE_FILE"
   msg "Wrote new console file: $CONSOLE_FILE -> $LABEL"
   apply_quirks_for "$LABEL"
-  copy_file
   sleep 5
 else
   CUR_VAL="$(tr -d '\r\n' < "$CONSOLE_FILE" || true)"
   if [[ "$CUR_VAL" == "$LABEL" ]]; then
-    # copt_add_libs 
     msg "Console unchanged ($CUR_VAL); nothing to do."
   else
     (
@@ -302,9 +267,8 @@ else
       # 顺序保持不变：先写 .console，再应用 quirks（避免重入时再次触发）
       echo "$LABEL" | sudo tee "$CONSOLE_FILE" > /dev/null
       apply_quirks_for "$LABEL"
-      copy_file
       sleep 5
-    ) > /dev/tty1 2>&1
+    )  > /dev/tty1 2>&1
   fi
 fi
 # 安装915wifi驱动
@@ -313,7 +277,7 @@ if [[ -f "$CONSOLE_FILE" ]]; then
   for x in "${rk915_set[@]}"; do
     if [[ "$cur_console" == "$x" ]]; then
       msg "insmod rk915.ko: $cur_console"
-      sudo insmod -f /usr/lib/modules/4.4.189/kernel/drivers/net/wireless/rk915.ko
+      sudo insmod -f /usr/lib/modules/4.4.189/kernel/drivers/net/wireless/rk915.ko || true
       break
     fi
   done
