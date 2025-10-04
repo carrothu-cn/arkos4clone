@@ -289,27 +289,27 @@ fi
 
 if [[ -f "/boot/.cn" ]]; then
   if grep -q "Language" /home/ark/.emulationstation/es_settings.cfg; then
-      sed -i -e '/<string name\=\"Language/c\<string name\=\"Language\" value\=\"zh-CN\" \/>' /home/ark/.emulationstation/es_settings.cfg
+      sed -i -e '/<string name\=\"Language/c\<string name\=\"Language\" value\=\"zh-CN\" \/>' /home/ark/.emulationstation/es_settings.cfg || true
   else
-      sed -i '$a <string name\=\"Language\" value\=\"zh-CN\" \/>' /home/ark/.emulationstation/es_settings.cfg
+      sed -i '$a <string name\=\"Language\" value\=\"zh-CN\" \/>' /home/ark/.emulationstation/es_settings.cfg || true
   fi
   cp_if_exists "$QUIRKS_DIR/option-gamelist.xml" "/opt/system/gamelist.xml" "yes"
-  sudo rm -f /etc/localtime
-  sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-  sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini
-  sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini.go
-  sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl
-  sed -i -e '/Language \= en_US/c\Language \= zh_CN' /roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini
-  sed -i -e '/Language \= en_US/c\Language \= zh_CN' /roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.go
-  sed -i -e '/Language \= en_US/c\Language \= zh_CN' /roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl
-  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch32/retroarch.cfg
-  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch/retroarch.cfg
-  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch32/retroarch.cfg.bak
-  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch/retroarch.cfg.bak
-  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch32/retroarch.cfg
-  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch/retroarch.cfg
-  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch32/retroarch.cfg.bak
-  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch/retroarch.cfg.bak
+  sudo rm -f /etc/localtime || true
+  sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime || true
+  sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini || true
+  sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini.go || true
+  sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl || true
+  sed -i -e '/Language \= en_US/c\Language \= zh_CN' /roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini || true
+  sed -i -e '/Language \= en_US/c\Language \= zh_CN' /roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.go || true
+  sed -i -e '/Language \= en_US/c\Language \= zh_CN' /roms/psp/ppsspp/PSP/SYSTEM/ppsspp.ini.sdl || true
+  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch32/retroarch.cfg || true
+  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch/retroarch.cfg || true
+  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch32/retroarch.cfg.bak || true
+  sed -i -e '/user_language \= \"/c\user_language \= \"12\"' /home/ark/.config/retroarch/retroarch.cfg.bak || true
+  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch32/retroarch.cfg || true
+  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch/retroarch.cfg || true
+  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch32/retroarch.cfg.bak || true
+  sed -i -e '/menu_driver \= \"/c\menu_driver \= \"ozone\"' /home/ark/.config/retroarch/retroarch.cfg.bak || true
 fi
 
 msg "Done."
