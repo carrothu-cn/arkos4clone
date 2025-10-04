@@ -53,7 +53,7 @@ MODEL="$(cat /boot/.console 2>/dev/null || echo unknown)"
 detect_backend() {
   case "${MODEL}" in
     xf35h|xf40h|k36s)          echo "mcu_led" ;;
-    mymini|r36ultra)      echo "gpio"  ;;
+    mymini|r36ultra|xgb36)      echo "gpio"  ;;
     xf40v|xf35v)          echo "ws2812"  ;;
     *)                    echo "unsupported" ;;
   esac

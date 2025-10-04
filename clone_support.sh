@@ -25,13 +25,13 @@ sudo cp -r ./consoles/files/* "$MOUNT_DIR/root/home/ark/.quirks/"
 sudo chown -R 1002:1002 "$MOUNT_DIR/root/home/ark/.quirks/"
 
 echo "== 注入 clone 用配置 =="
-sudo mkdir -p "$MOUNT_DIR/root/opt/system/clone" "$MOUNT_DIR/root/usr/bin"
-# sudo cp -f ./sh/adjust-keys.sh ./sh/joyled.sh "$MOUNT_DIR/root/opt/system/clone/"
+sudo mkdir -p "$MOUNT_DIR/root/opt/system/Clone" "$MOUNT_DIR/root/usr/bin"
+sudo cp -f ./sh/joyled.sh "$MOUNT_DIR/root/opt/system/Clone/"
 sudo cp -f ./bin/mcu_led ./bin/ws2812 "$MOUNT_DIR/root/usr/bin/"
 sudo chown -f 1002:1002 "$MOUNT_DIR/root/usr/bin/ws2812" || true
 sudo chown -f 1002:1002 "$MOUNT_DIR/root/usr/bin/mcu_led" || true
-sudo chown -R 1002:1002 "$MOUNT_DIR/root/opt/system/clone"
-sudo chmod -R 755 "$MOUNT_DIR/root/opt/system/clone"
+sudo chown -R 1002:1002 "$MOUNT_DIR/root/opt/system/Clone"
+sudo chmod -R 755 "$MOUNT_DIR/root/opt/system/Clone"
 sudo chmod 755 "$MOUNT_DIR/root/usr/bin/mcu_led" "$MOUNT_DIR/root/usr/bin/ws2812"
 
 echo "== 注入 915 驱动 =="
@@ -82,6 +82,8 @@ sudo cp -f ./replace_file/es_systems.cfg "$MOUNT_DIR/root/etc/emulationstation/"
 sudo chmod 777 "$MOUNT_DIR/root/etc/emulationstation/es_systems.cfg" 2>/dev/null || true
 sudo cp -f ./replace_file/emulationstation2.po "$MOUNT_DIR/root/usr/bin/emulationstation/resources/locale/zh-CN/"
 
+sudo cp -f ./replace_file/es_input.cfg "$MOUNT_DIR/root/etc/emulationstation/"
+sudo chmod 777 "$MOUNT_DIR/root/etc/emulationstation/es_input.cfg" 2>/dev/null || true
 
 echo "== 复制 roms.tar 出来操作 =="
 sudo cp "$MOUNT_DIR/root/roms.tar" /home/lcdyk/arkos/
@@ -106,8 +108,15 @@ sudo cp -r ./replace_file/ogage "$MOUNT_DIR/root/home/ark/.quirks/"
 echo "== 删除不需要的文件 =="
 sudo rm -rf "$MOUNT_DIR/boot/BMPs"
 sudo rm -rf "$MOUNT_DIR/boot/ScreenFiles"
-sudo rm -rf "$MOUNT_DIR/boot/boot.ini" "$MOUNT_DIR/boot/*.dtb" "$MOUNT_DIR/boot/*.orig" "$MOUNT_DIR/boot/*.tony"
-sed -i -E '/^title=.*\([^()]*\)\([^()]*\)$/ s/$/(kk\&lcdyk)/' "$MOUNT_DIR/root/usr/share/plymouth/themes/text.plymouth"
-sed -i -E 's/^(title=.*\([^()]*\)\([^()]*\)\()[^()]*(\))$/\1kk\&lcdyk\2/' "$MOUNT_DIR/root/usr/share/plymouth/themes/text.plymouth"
+sudo rm -rf "$MOUNT_DIR/boot/boot.ini" $MOUNT_DIR/boot/*.dtb $MOUNT_DIR/boot/*.orig $MOUNT_DIR/boot/*.tony
+if ! grep -q "(kk&lcdyk)" "$MOUNT_DIR/root/usr/share/plymouth/themes/text.plymouth"; then
+    sed -i -E 's/^(title=.*\([^()]*\)\([^()]*\)\()[^()]*(\))$/\1kk\&lcdyk\2/' "$MOUNT_DIR/root/usr/share/plymouth/themes/text.plymouth"
+fi
+cat $MOUNT_DIR/root/usr/share/plymouth/themes/text.plymouth
+sudo rm -rf "$MOUNT_DIR/root/opt/system/DeviceType"
+sudo rm -rf "$MOUNT_DIR/root/opt/system/Advanced/Video Boot/"
+sudo rm -rf "$MOUNT_DIR/root/opt/system/Set Launchimage to ascii or pic.sh"
+sudo rm -rf "$MOUNT_DIR/root/opt/system/Set Launchimage to vid.sh"
+
 
 echo "== 完成 =="

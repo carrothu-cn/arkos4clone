@@ -30,16 +30,17 @@ ALIASES = {
     "g80cambv12": "R36S Clone G80camb v1.2",
     "r36s v20 719m": "R36S Clone V2.0 719M",
     "k36p7": "K36 Panel 7",
+    "xgb36": "GameConsole XGB36",
 }
 
 # 1.1) 新增：品牌映射（用于一级菜单分组）
 #      键为 consoles 下的真实目录名；值为品牌名
 BRAND_MAP = {
-    "XiFan HandHeld" : ["XiFan Mymini", "XiFan R36Max", "XiFan R36Pro", "XiFan XF35H", "XiFan XF40H"],
+    "XiFan HandHelds" : ["XiFan Mymini", "XiFan R36Max", "XiFan R36Pro", "XiFan XF35H", "XiFan XF40H"],
     "GameConsole" : ["GameConsole R36s Panel 0", "GameConsole R36s Panel 1", "GameConsole R36s Panel 2", "GameConsole R36s Panel 3", "GameConsole R36s Panel 4", "GameConsole R36s Panel 5", "GameConsole R36sPlus", "GameConsole R46H"],
     "YMC" : ["YMC A10MINI"],
     "Clone R36s" : ["R36S Clone G80camb v1.2", "R36S Clone V2.0 719M", "K36 Panel 1", "K36 Panel 7"],
-    "Other" : ["GameConsole HG36", "GameConsole R36Ultra", "GameConsole RX6H", "GameConsole K36S", "GameConsole R36T", ]
+    "Other" : ["GameConsole HG36", "GameConsole R36Ultra", "GameConsole RX6H", "GameConsole K36S", "GameConsole R36T", "GameConsole XGB36"]
 }
 
 # 2) 排除规则（glob 通配，多条规则其一匹配即排除）
@@ -76,6 +77,7 @@ EXTRA_COPY_MAP = {
     "g80cambv12": ["logo/480P/", "kenrel/common/"],
     "r36s v20 719m": ["logo/480P/", "kenrel/common/"],
     "k36p7": ["logo/480P/", "kenrel/common/"],
+    "xgb36": ["logo/480P/", "kenrel/common/"],
 
     # 按需添加更多键值
 }
@@ -306,7 +308,7 @@ def choose_language_and_mark(dst_dir):
     if not sys.stdin.isatty():
         return
 
-    print("\n🌐 选择语言 / Language")
+    print("\n选择语言 / Language")
     print("1) English (默认 / default)")
     print("2) 中文")
     sel = input("Enter 1 or 2 [1]: ").strip().lower()

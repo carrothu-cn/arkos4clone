@@ -29,6 +29,7 @@ declare -A dtb2label=(
   [rk3326-r36sclonev20-linux.dtb]=clone719m
   [rk3326-k36p7-linux.dtb]=k36panel7
   [rk3326-a10mini-linux.dtb]=a10mini
+  [rk3326-xgb36-linux.dtb]=xgb36
 )
 declare -A console_profile=(
   [r36s]=480p
@@ -48,6 +49,7 @@ declare -A console_profile=(
   [clone719m]=480p
   [k36panel7]=480p
   [a10mini]=480p
+  [xgb36]=480p
 )
 declare -A joy_conf_map=(
   [r36s]=dual
@@ -67,6 +69,7 @@ declare -A joy_conf_map=(
   [clone719m]=dual
   [k36panel7]=dual
   [a10mini]=none
+  [xgb36]=single
 )
 declare -A ogage_conf_map=(
   [r36s]=happy5
@@ -86,6 +89,7 @@ declare -A ogage_conf_map=(
   [clone719m]=happy5
   [k36panel7]=happy5
   [a10mini]=happy5
+  [xgb36]=happy5
   # 按需增删：  [机型]=select|mode
 )
 rk915_set=("xf40h" "xf40v" "xf35h" "r36ultra" "k36s")   # 按需增删
@@ -230,11 +234,11 @@ msg "DTB filename: ${DTB:-<empty>}, LABEL: $LABEL"
 
 # 检测 /boot/fix_audio.sh 是否存在
 if [ -f "/boot/fix_audio.sh" ]; then
-  mkdir -p /opt/system/clone
-  cp -f "/boot/fix_audio.sh" "/opt/system/clone/Toggle Audio.sh"
+  mkdir -p /opt/system/Clone
+  cp -f "/boot/fix_audio.sh" "/opt/system/Clone/Toggle Audio.sh"
   "/boot/fix_audio.sh"
   rm -rf "/boot/fix_audio.sh"
-  echo "[boot] Copied fix_audio.sh -> /opt/system/clone/Toggle Audio.sh"
+  echo "[boot] Copied fix_audio.sh -> /opt/system/Clone/Toggle Audio.sh"
 fi
 
 # 按规则处理 /boot/.console
@@ -289,6 +293,7 @@ if [[ -f "/boot/.cn" ]]; then
   else
       sed -i '$a <string name\=\"Language\" value\=\"zh-CN\" \/>' /home/ark/.emulationstation/es_settings.cfg
   fi
+  cp_if_exists "$QUIRKS_DIR/option-gamelist.xml" "/opt/system/gamelist.xml" "yes"
   sudo rm -f /etc/localtime
   sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
   sudo sed -i -e '/Language \= en_US/c\Language \= zh_CN' /opt/ppsspp/backupforromsfolder/ppsspp/PSP/SYSTEM/ppsspp.ini
