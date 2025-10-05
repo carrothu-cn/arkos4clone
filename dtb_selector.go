@@ -164,9 +164,9 @@ var Consoles = []ConsoleConfig{
 		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
 	},
 	{
-		RealName: "r36s v20 719m",
+		RealName: "k36p4",
 		BrandEntries: []BrandEntry{
-			{Brand: "Clone R36s", DisplayName: "R36S Clone V2.0 719M"},
+			{Brand: "Clone R36s", DisplayName: "K36 Panel 4"},
 		},
 		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
 	},
