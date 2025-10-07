@@ -157,13 +157,6 @@ var Consoles = []ConsoleConfig{
 		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
 	},
 	{
-		RealName: "g80cambv12",
-		BrandEntries: []BrandEntry{
-			{Brand: "Clone R36s", DisplayName: "R36S Clone G80camb v1.2"},
-		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
-	},
-	{
 		RealName: "k36p4",
 		BrandEntries: []BrandEntry{
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 4"},
@@ -174,6 +167,13 @@ var Consoles = []ConsoleConfig{
 		RealName: "k36p7",
 		BrandEntries: []BrandEntry{
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 7"},
+		},
+		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+	},
+	{
+		RealName: "k36p8",
+		BrandEntries: []BrandEntry{
+			{Brand: "Clone R36s", DisplayName: "K36 Panel 8"},
 		},
 		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
 	},

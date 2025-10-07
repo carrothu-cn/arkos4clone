@@ -16,7 +16,7 @@ Currently, I can only maintain the devices I personally own, but contributions a
 - **K36S**
 - **RX6H**
 - **A10Mini**
-- **R36S Clone [G80CAMB v1.2 0422|0423]**
+- **R36S Clone [K36 Panel 8]**
 - **R36S Clone [K36 Panel 4]**  [origin dtb](https://github.com/Vi-K36/EE-Clones-DTB/tree/main/R36S%20EE-Clone/Stock%20(P4)%20%5BE93995-2022%5D%20(2025))
 - **R36S Clone [K36 Panel 7]**  [origin dtb](https://github.com/AeolusUX/K36-DTB/tree/main/Panel%207)
 
