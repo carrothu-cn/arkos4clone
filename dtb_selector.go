@@ -33,14 +33,14 @@ var Consoles = []ConsoleConfig{
 		BrandEntries: []BrandEntry{
 			{Brand: "XiFan HandHelds", DisplayName: "XiFan Mymini"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "r36max",
 		BrandEntries: []BrandEntry{
 			{Brand: "XiFan HandHelds", DisplayName: "XiFan R36Max"},
 		},
-		ExtraSources: []string{"logo/720P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/720P/", "kernel/common/"},
 	},
 	{
 		RealName: "r36pro",
@@ -48,21 +48,21 @@ var Consoles = []ConsoleConfig{
 			{Brand: "XiFan HandHelds", DisplayName: "XiFan R36Pro"},
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 1"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "xf35h",
 		BrandEntries: []BrandEntry{
 			{Brand: "XiFan HandHelds", DisplayName: "XiFan XF35H"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "xf40h",
 		BrandEntries: []BrandEntry{
 			{Brand: "XiFan HandHelds", DisplayName: "XiFan XF40H"},
 		},
-		ExtraSources: []string{"logo/720P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/720P/", "kernel/common/"},
 	},
 	{
 		RealName: "k36s",
@@ -70,119 +70,126 @@ var Consoles = []ConsoleConfig{
 			{Brand: "Other", DisplayName: "GameConsole K36S"},
 			{Brand: "Other", DisplayName: "GameConsole R36T"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "hg36",
 		BrandEntries: []BrandEntry{
 			{Brand: "Other", DisplayName: "GameConsole HG36"},
 		},
-		ExtraSources: []string{"logo/480p/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480p/", "kernel/common/"},
 	},
 	{
 		RealName: "r36ultra",
 		BrandEntries: []BrandEntry{
 			{Brand: "Other", DisplayName: "GameConsole R36Ultra"},
 		},
-		ExtraSources: []string{"logo/720P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/720P/", "kernel/common/"},
 	},
 	{
 		RealName: "rx6h",
 		BrandEntries: []BrandEntry{
 			{Brand: "Other", DisplayName: "GameConsole RX6H"},
 		},
-		ExtraSources: []string{"logo/480p/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480p/", "kernel/common/"},
 	},
 	{
 		RealName: "r46h",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R46H"},
 		},
-		ExtraSources: []string{"logo/768p/", "kenrel/common/"},
+		ExtraSources: []string{"logo/768p/", "kernel/common/"},
 	},
 	{
 		RealName: "r36splus",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36sPlus"},
 		},
-		ExtraSources: []string{"logo/720p/", "kenrel/common/"},
+		ExtraSources: []string{"logo/720p/", "kernel/common/"},
 	},
 	{
 		RealName: "origin r36s panel 0",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 0"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "origin r36s panel 1",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 1"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "origin r36s panel 2",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 2"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "origin r36s panel 3",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 3"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "origin r36s panel 4",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 4"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
-		RealName: "origin r36s panel 5",
+		RealName: "soy sauce r36s panel 5",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 5"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/panel5/"},
+		ExtraSources: []string{"logo/480P/", "kernel/soySauce/"},
+	},
+	{
+		RealName: "soy sauce r36s panel 6",
+		BrandEntries: []BrandEntry{
+			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 6"},
+		},
+		ExtraSources: []string{"logo/480P/", "kernel/soySauce/"},
 	},
 	{
 		RealName: "a10mini",
 		BrandEntries: []BrandEntry{
 			{Brand: "YMC", DisplayName: "YMC A10MINI"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "k36p4",
 		BrandEntries: []BrandEntry{
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 4"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "k36p7",
 		BrandEntries: []BrandEntry{
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 7"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "k36p8",
 		BrandEntries: []BrandEntry{
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 8"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "xgb36",
 		BrandEntries: []BrandEntry{
 			{Brand: "Other", DisplayName: "GameConsole XGB36"},
 		},
-		ExtraSources: []string{"logo/480P/", "kenrel/common/"},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 }
 

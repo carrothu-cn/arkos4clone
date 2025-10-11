@@ -49,7 +49,7 @@ Or —
 If you are a non-Windows user, perform the configuration manually by mounting the `BOOT` partition and:
 
 1. Copy all files from `consoles/<your-hardware>` (`boot.ini`, and two `dtb` files) to the root directory of the SD card.
-2. Copy `Image` from `consoles/kenrel/common`(sic) to the root directory of the SD card.
+2. Copy `Image` from `consoles/kernel/common`(sic) to the root directory of the SD card.
 3. Copy the `consoles/logo/<your-screen-res>/logo.bmp` to the root directory of the SD card.
 4. Unmount the SD card, install into the handheld, and reboot
 
