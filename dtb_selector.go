@@ -277,20 +277,20 @@ func introAndWaitFancy() {
 	fancyHeader("DTB Selector - 请选择机型 / Select Your Console")
 	p(c("\n================ Welcome 欢迎使用 ================", HDR))
 	p(c("说明：本系统目前只支持下列机型，如果你的 R36 克隆机不在列表中，则暂时无法使用。", BUL))
+	p(c("💡 如果你不知道你的设备是什么克隆，可以使用 https://lcdyk0517.github.io/ 来辅助判断", NOTE))
 	p(c("请不要使用原装 EmuELEC 卡中的 dtb 文件搭配本系统，否则会导致系统无法启动！", WARN))
 	p("")
 	p(c("选择机型前请阅读：", EMP))
-	p(c("  • 本工具会清理目标目录顶层的 .dtb/.ini/.orig/.tony 文件，并删除 BMPs 文件夹；", BUL))
 	p(c("  • 随后复制所选机型及额外映射资源。", BUL))
 	p(c("  • 按 Enter 继续；输入 q 退出。", NOTE))
 	p(c("-----------------------------------------", DIM))
 	p(c("NOTE:", EMP))
 	p(c("  • This system currently only supports the listed R36 clones;", BUL))
 	p(c("    if your clone is not in the list, it is not supported yet.", BUL))
+	p(c("💡 If you don't know what clone your device is, use https://lcdyk0517.github.io/ to help identify it", NOTE))
 	p(c("  • Do NOT use the dtb files from the stock EmuELEC card with this system — it will brick the boot.", WARN))
 	p("")
 	p(c("Before selecting a console:", EMP))
-	p(c("  • This tool cleans top-level .dtb/.ini/.orig/.tony files and removes the BMPs/ folder,", BUL))
 	p(c("    then copies the chosen console and any mapped extra sources.", BUL))
 	p(c("  • Press Enter to continue; type 'q' to quit.", NOTE))
 
@@ -478,59 +478,34 @@ func selectConsole(brand string) (*ConsoleConfig, string, error) {
 	fmt.Printf("│ %s\n", colorWrap("该品牌可用机型 / Available consoles for: "+brand, ansiBold+ansiGreen))
 	fmt.Println(colorWrap("└────────────────────────────────────────┘", ansiCyan))
 
-	var brandConsoles []ConsoleConfig
+	// 重新组织数据结构，每个显示名称对应一个配置
+	type consoleOption struct {
+		config      *ConsoleConfig
+		displayName string
+	}
+	var consoleOptions []consoleOption
 
-	// 查找属于当前品牌的所有设备
+	// 查找属于当前品牌的所有设备，每个显示名称都作为独立选项
 	for _, console := range Consoles {
 		for _, entry := range console.BrandEntries {
 			if entry.Brand == brand {
-				// 只添加一次，避免重复
-				alreadyAdded := false
-				for _, existing := range brandConsoles {
-					if existing.RealName == console.RealName {
-						alreadyAdded = true
-						break
-					}
-				}
-				if !alreadyAdded {
-					brandConsoles = append(brandConsoles, console)
-				}
-				break
+				consoleOptions = append(consoleOptions, consoleOption{
+					config:      &console,
+					displayName: entry.DisplayName,
+				})
 			}
 		}
 	}
 
-	if len(brandConsoles) == 0 {
+	if len(consoleOptions) == 0 {
 		fmt.Println(colorWrap("该品牌下没有机型 (No consoles found).", ansiRed))
 		_, _ = prompt("按 Enter 返回 (Press Enter to continue)...")
 		return nil, "", nil
 	}
 
-	// 显示菜单
-	for i, console := range brandConsoles {
-		// 找到在当前品牌下的显示名称
-		var displayNames []string
-		for _, entry := range console.BrandEntries {
-			if entry.Brand == brand {
-				displayNames = append(displayNames, entry.DisplayName)
-			}
-		}
-
-		if len(displayNames) > 1 {
-			// 如果有多个显示名称，用斜杠分隔
-			fmt.Printf("  %d. %s", i+1, strings.Join(displayNames, " / "))
-		} else if len(displayNames) == 1 {
-			fmt.Printf("  %d. %s", i+1, displayNames[0])
-		}
-
-		// 显示备注（如果设备在其他品牌下有不同名称）
-		var otherBrandNames []string
-		for _, entry := range console.BrandEntries {
-			if entry.Brand != brand {
-				otherBrandNames = append(otherBrandNames, fmt.Sprintf("%s(%s)", entry.DisplayName, entry.Brand))
-			}
-		}
-		fmt.Println()
+	// 显示菜单 - 每个选项单独一行
+	for i, option := range consoleOptions {
+		fmt.Printf("  %d. %s\n", i+1, option.displayName)
 	}
 	fmt.Printf("  %d. %s\n", 0, "Back/返回")
 
@@ -542,23 +517,14 @@ func selectConsole(brand string) (*ConsoleConfig, string, error) {
 		if choice == 0 {
 			return nil, "", nil
 		}
-		if choice > 0 && choice <= len(brandConsoles) {
-			selected := &brandConsoles[choice-1]
-			// 获取当前品牌下的显示名称
-			var currentBrandName string
-			for _, entry := range selected.BrandEntries {
-				if entry.Brand == brand {
-					currentBrandName = entry.DisplayName
-					break
-				}
-			}
-			fmt.Printf("Selected: %s\n", currentBrandName)
-			return selected, currentBrandName, nil
+		if choice > 0 && choice <= len(consoleOptions) {
+			selected := consoleOptions[choice-1]
+			fmt.Printf("Selected: %s\n", selected.displayName)
+			return selected.config, selected.displayName, nil
 		}
 		fmt.Println(colorWrap("选择无效，请重试 (Invalid selection).", ansiRed))
 	}
 }
-
 func showMenu() (*SelectedConsole, error) {
 	for {
 		brand, err := selectBrand()
