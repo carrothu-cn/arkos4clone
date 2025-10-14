@@ -178,6 +178,13 @@ var Consoles = []ConsoleConfig{
 		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
+		RealName: "clone typec",
+		BrandEntries: []BrandEntry{
+			{Brand: "Clone R36s", DisplayName: "Clone TypeC"},
+		},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
+	},
+	{
 		RealName: "k36p8",
 		BrandEntries: []BrandEntry{
 			{Brand: "Clone R36s", DisplayName: "K36 Panel 8"},
