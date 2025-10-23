@@ -18,7 +18,7 @@ Currently, I can only maintain the devices I personally own, but contributions a
 - **A10Mini**
 - **R36S Clone [type1-5]** 
 
-**💡 If you don't know what clone your device is but you have the DTB file, you can use [ DTB Analysis Tool Web](https://lcdyk0517.github.io/) to help identify your clone type.**
+**💡 If you don't know what clone your device is but you have the DTB file, you can use [ DTB Analysis Tool Web](https://lcdyk0517.github.io/dtbTools.html) to help identify your clone type.**
 
 
 
