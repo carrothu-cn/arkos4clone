@@ -162,20 +162,23 @@ var Consoles = []ConsoleConfig{
 		RealName: "origin r36s panel 4",
 		BrandEntries: []BrandEntry{
 			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 4"},
+			{Brand: "GameConsole", DisplayName: "GameConsole R36XX"},
+			{Brand: "GameConsole", DisplayName: "GameConsole R36H"},
+			{Brand: "GameConsole", DisplayName: "GameConsole O30S"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "soy sauce r36s panel 5",
 		BrandEntries: []BrandEntry{
-			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 5"},
+			{Brand: "GameConsole", DisplayName: "Soy Sauce V03"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/soySauce/"},
 	},
 	{
 		RealName: "soy sauce r36s panel 6",
 		BrandEntries: []BrandEntry{
-			{Brand: "GameConsole", DisplayName: "GameConsole R36s Panel 6"},
+			{Brand: "GameConsole", DisplayName: "Soy Sauce V04"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/soySauce/"},
 	},
@@ -226,6 +229,13 @@ var Consoles = []ConsoleConfig{
 		RealName: "xgb36",
 		BrandEntries: []BrandEntry{
 			{Brand: "Other", DisplayName: "GameConsole XGB36"},
+		},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
+	},
+	{
+		RealName: "t16max",
+		BrandEntries: []BrandEntry{
+			{Brand: "Other", DisplayName: "GameConsole T16MAX"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
