@@ -30,8 +30,6 @@ Currently, I can only maintain the devices I personally own, but contributions a
 |                      | **GameConsole R36XX**                   | `logo/480P/`, `kernel/common/`, `consoles/origin r36s panel 4/` |
 |                      | **GameConsole R36H**                    | `logo/480P/`, `kernel/common/`, `consoles/origin r36s panel 4/` |
 |                      | **GameConsole O30S**                    | `logo/480P/`, `kernel/common/`, `consoles/origin r36s panel 4/` |
-|                      | **Soy Sauce V03**                       | `logo/480P/`, `kernel/soySauce/`, `consoles/soy sauce r36s panel 5/` |
-|                      | **Soy Sauce V04**                       | `logo/480P/`, `kernel/soySauce/`, `consoles/soy sauce r36s panel 6/` |
 | **YMC**               | **YMC A10MINI**                        | `logo/480P/`, `kernel/common/`, `consoles/a10mini/`     |
 | **Kinhank**           | **K36 Origin Panel**                    | `logo/480P/`, `kernel/common/`, `consoles/k36/`         |
 | **Clone R36s**        | **Clone Type 1 With Amplifier** | `logo/480P/`, `kernel/common/`, `consoles/r36pro/` |
@@ -41,6 +39,9 @@ Currently, I can only maintain the devices I personally own, but contributions a
 |                      | **Clone Type 3**                         | `logo/480P/`, `kernel/common/`, `consoles/clone type3/` |
 |                      | **Clone Type 4**                         | `logo/480P/`, `kernel/common/`, `consoles/clone type4/` |
 |                      | **Clone Type 5**                         | `logo/480P/`, `kernel/common/`, `consoles/clone type5/` |
+| **SoySauce R36s**    | **Panel 5**                             | `logo/480P/`, `kernel/soySauce/`, `consoles/soy sauce r36s panel 5/` |
+|                      | **Panel 6**                            | `logo/480P/`, `kernel/soySauce/`, `consoles/soy sauce r36s panel 6/` |
+|                      | **Soy Sauce V04**                       | `logo/480P/`, `kernel/common/`, `consoles/soy sauce v04/` |
 | **Other**             | **GameConsole K36S**                    | `logo/480P/`, `kernel/common/`, `consoles/k36s/`        |
 |                      | **GameConsole R36T**                    | `logo/480P/`, `kernel/common/`, `consoles/k36s/`        |
 |                      | **GameConsole R36T MAX**                | `logo/720P/`, `kernel/common/`, `consoles/r36tmax/`     |

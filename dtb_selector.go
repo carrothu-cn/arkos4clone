@@ -171,16 +171,23 @@ var Consoles = []ConsoleConfig{
 	{
 		RealName: "soy sauce r36s panel 5",
 		BrandEntries: []BrandEntry{
-			{Brand: "GameConsole", DisplayName: "Soy Sauce V03"},
+			{Brand: "SaySouce R36s", DisplayName: "Panel 5"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/soySauce/"},
 	},
 	{
 		RealName: "soy sauce r36s panel 6",
 		BrandEntries: []BrandEntry{
-			{Brand: "GameConsole", DisplayName: "Soy Sauce V04"},
+			{Brand: "SaySouce R36s", DisplayName: "Panel 6"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/soySauce/"},
+	},
+	{
+		RealName: "soy sauce v04",
+		BrandEntries: []BrandEntry{
+			{Brand: "SaySouce R36s", DisplayName: "Soy Sauce V04 (ArkOS4Clone kernel) (adjust 60Hz)"},
+		},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
 		RealName: "a10mini",
@@ -248,6 +255,7 @@ var Brands = []string{
 	"YMC",
 	"Kinhank",
 	"Clone R36s",
+	"SaySouce R36s",
 	"Other",
 }
 
