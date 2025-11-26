@@ -57,6 +57,7 @@ declare -A dtb2label=(
   [rk3326-r36ultra-linux.dtb]=r36ultra
   [rk3326-xgb36-linux.dtb]=xgb36
   [rk3326-a10mini-linux.dtb]=a10mini
+  [rk3326-g350-linux.dtb]=g350
 )
 
 declare -A console_profile=(
@@ -79,6 +80,7 @@ declare -A console_profile=(
   [r36ultra]=720p
   [xgb36]=480p
   [a10mini]=480p
+  [g350]=480p
   [r36s]=480p
 )
 
@@ -102,6 +104,7 @@ declare -A joy_conf_map=(
   [r36ultra]=dual
   [xgb36]=single
   [a10mini]=none
+  [g350]=dual
   [r36s]=dual
 )
 
@@ -125,6 +128,7 @@ declare -A ogage_conf_map=(
   [r36ultra]=happy5
   [xgb36]=happy5
   [a10mini]=happy5
+  [g350]=happy5
   [r36s]=happy5
 )
 

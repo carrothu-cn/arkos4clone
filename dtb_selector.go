@@ -272,12 +272,20 @@ var Consoles = []ConsoleConfig{
 		},
 		ExtraSources: []string{"logo/720P/", "kernel/common/"},
 	},
+	{
+		RealName: "g350",
+		BrandEntries: []BrandEntry{
+			{Brand: "Batlexp", DisplayName: "Batlexp G350"},
+		},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
+	},
 }
 
 // 品牌列表
 var Brands = []string{
 	"YMC",
 	"AISLPC",
+	"Batlexp",
 	"Kinhank",
 	"Clone R36s",
 	"GameConsole",
