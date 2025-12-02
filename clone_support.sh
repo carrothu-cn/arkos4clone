@@ -118,6 +118,10 @@ else
   echo "== 跳过 roms.tar 操作 =="
 fi
 
+echo "== 调整retrorun =="
+sudo cp -r ./replace_file/retrorun/retrorun32 "$MOUNT_DIR/root/usr/local/bin/"
+# sudo cp -r ./replace_file/retrorun/retrorun "$MOUNT_DIR/root/usr/local/bin/"
+
 echo "== ogage快捷键复制 =="
 sudo cp -r ./replace_file/ogage "$MOUNT_DIR/root/usr/local/bin/"
 sudo cp -r ./replace_file/ogage "$MOUNT_DIR/root/home/ark/.quirks/"

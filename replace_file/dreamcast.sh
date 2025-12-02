@@ -63,9 +63,22 @@ DEVICENAME="RG351MP"
 elif [ -f "/boot/rk3326-odroidgo2-linux.dtb" ] || [ -f "/boot/rk3326-odroidgo2-linux-v11.dtb" ] || [ -f "/boot/rk3326-odroidgo3-linux.dtb" ]; then
 DEVICENAME="RGB10"
 elif [ -f "/boot/.console" ]; then
-DEVICENAME="RG351MP"
+    # 读取内容并去除换行符
+    CONSOLE_VAL="$(tr -d '\r\n' < /boot/.console 2>/dev/null)"
+
+    case "$CONSOLE_VAL" in
+        u8)
+            DEVICENAME="U8"
+            ;;
+        mymini|xgb36)
+            DEVICENAME="Mymini"
+            ;;
+        *)
+            DEVICENAME="RG351MP"
+            ;;
+    esac
 else
-DEVICENAME="RG351P"
+    DEVICENAME="RG351P"
 fi
 export DEVICE_NAME="${DEVICENAME}"
 
@@ -123,9 +136,22 @@ DEVICENAME="RG351MP"
 elif [ -f "/boot/rk3326-odroidgo2-linux.dtb" ] || [ -f "/boot/rk3326-odroidgo2-linux-v11.dtb" ] || [ -f "/boot/rk3326-odroidgo3-linux.dtb" ]; then
 DEVICENAME="RGB10"
 elif [ -f "/boot/.console" ]; then
-DEVICENAME="RG351MP"
+    # 读取内容并去除换行符
+    CONSOLE_VAL="$(tr -d '\r\n' < /boot/.console 2>/dev/null)"
+
+    case "$CONSOLE_VAL" in
+        u8)
+            DEVICENAME="U8"
+            ;;
+        mymini|xgb36)
+            DEVICENAME="Mymini"
+            ;;
+        *)
+            DEVICENAME="RG351MP"
+            ;;
+    esac
 else
-DEVICENAME="RG351P"
+    DEVICENAME="RG351P"
 fi
 export DEVICE_NAME="${DEVICENAME}"
 

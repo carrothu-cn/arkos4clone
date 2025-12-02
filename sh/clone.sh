@@ -63,6 +63,7 @@ declare -A dtb2label=(
   [rk3326-a10mini-linux.dtb]=a10mini
   [rk3326-g350-linux.dtb]=g350
   [rk3326-u8-linux.dtb]=u8
+  [rk3326-u8-v2-linux.dtb]=u8
 )
 
 declare -A console_profile=(

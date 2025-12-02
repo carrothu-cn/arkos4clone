@@ -48,11 +48,13 @@ Currently, I can only maintain the devices I personally own, but contributions a
 |                      | **XiFan XF40V**                         | `logo/720P/`, `kernel/common/`, `consoles/dc40v/`       |
 |                      | **XiFan DC35V**                         | `logo/480P/`, `kernel/common/`, `consoles/dc35v/`       |
 |                      | **XiFan DC40V**                         | `logo/720P/`, `kernel/common/`, `consoles/dc40v/`       |
-|**Other**             | **GameConsole HG36**                    | `logo/480P/`, `kernel/common/`, `consoles/hg36/`        |
+|**Other**             | **GameConsole HG36 （HG3506）**         | `logo/480P/`, `kernel/common/`, `consoles/hg36/`        |
 |                      | **GameConsole R36Ultra**                | `logo/720P/`, `kernel/common/`, `consoles/r36ultra/`    |
 |                      | **GameConsole RX6H**                    | `logo/480P/`, `kernel/common/`, `consoles/rx6h/`        |
-|                       | **GameConsole XGB36**                   | `logo/480P/`, `kernel/common/`, `consoles/xgb36/`       |
+|                       | **GameConsole XGB36 (G26)**        | `logo/480P/`, `kernel/common/`, `consoles/xgb36/`       |
 |                      | **GameConsole T16MAX**                  | `logo/720P/`, `kernel/common/`, `consoles/t16max/`      |
+| | **GameConsole U8** | `logo/480P5-3/`, `kernel/common/`, `consoles/u8/` |
+| | **GameConsole U8 V2** | `logo/480P5-3/`, `kernel/common/`, `consoles/u8-v2/` |
 
 ---
 

@@ -97,7 +97,7 @@ var Consoles = []ConsoleConfig{
 	{
 		RealName: "hg36",
 		BrandEntries: []BrandEntry{
-			{Brand: "Other", DisplayName: "GameConsole HG36"},
+			{Brand: "Other", DisplayName: "GameConsole HG36 (HG3506)"},
 			{Brand: "Clone R36s", DisplayName: "Clone Type 1 Without Amplifier"},
 		},
 		ExtraSources: []string{"logo/480p/", "kernel/common/"},
@@ -261,7 +261,7 @@ var Consoles = []ConsoleConfig{
 	{
 		RealName: "xgb36",
 		BrandEntries: []BrandEntry{
-			{Brand: "Other", DisplayName: "GameConsole XGB36"},
+			{Brand: "Other", DisplayName: "GameConsole XGB36 (G26)"},
 		},
 		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
@@ -271,6 +271,20 @@ var Consoles = []ConsoleConfig{
 			{Brand: "Other", DisplayName: "GameConsole T16MAX"},
 		},
 		ExtraSources: []string{"logo/720P/", "kernel/common/"},
+	},
+	{
+		RealName: "u8",
+		BrandEntries: []BrandEntry{
+			{Brand: "Other", DisplayName: "GameConsole U8"},
+		},
+		ExtraSources: []string{"logo/480P5-3/", "kernel/common/"},
+	},
+	{
+		RealName: "u8-v2",
+		BrandEntries: []BrandEntry{
+			{Brand: "Other", DisplayName: "GameConsole U8 V2"},
+		},
+		ExtraSources: []string{"logo/480P5-3/", "kernel/common/"},
 	},
 	{
 		RealName: "g350",
