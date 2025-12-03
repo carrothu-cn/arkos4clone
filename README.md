@@ -13,6 +13,7 @@ Currently, I can only maintain the devices I personally own, but contributions a
 | **Brand**            | **Device**                               | **Files to Copy**                                      |
 |----------------------|------------------------------------------|--------------------------------------------------------|
 | **YMC**               | **YMC A10MINI**                        | `logo/480P/`, `kernel/common/`, `consoles/a10mini/`     |
+| **Diium**            | **Diium Dr28s**                         | `logo/480P-270/`, `kernel/common/`, `consoles/dr28s/`        |
 | **AISLPC**            | **GameConsole K36S**                    | `logo/480P/`, `kernel/common/`, `consoles/k36s/`        |
 |                      | **GameConsole R36T**                    | `logo/480P/`, `kernel/common/`, `consoles/k36s/`        |
 |                      | **GameConsole R36T MAX**                | `logo/720P/`, `kernel/common/`, `consoles/r36tmax/`     |

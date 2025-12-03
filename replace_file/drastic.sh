@@ -39,9 +39,8 @@ sudo ./gptokeyb &
 
 if [[ -f "/boot/.console" ]]; then
   CUR_VAL="$(tr -d '\r\n' < "/boot/.console" || true)"
-  if [[ "$CUR_VAL" == "u8" ]]; then
-    # LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10.rotated ./drastic "$1"
-    ./drastic "$1"
+  if [[ "$CUR_VAL" == "u8" || "$CUR_VAL" == "dr28s" ]]; then
+    LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10.rotated ./drastic "$1"
   else
     LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10 ./drastic "$1"
   fi

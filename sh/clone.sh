@@ -64,6 +64,7 @@ declare -A dtb2label=(
   [rk3326-g350-linux.dtb]=g350
   [rk3326-u8-linux.dtb]=u8
   [rk3326-u8-v2-linux.dtb]=u8
+  [rk3326-dr28s-linux.dtb]=dr28s
 )
 
 declare -A console_profile=(
@@ -88,6 +89,7 @@ declare -A console_profile=(
   [a10mini]=480p
   [g350]=480p
   [u8]=800p480
+  [dr28s]=480p
   [r36s]=480p
 )
 
@@ -113,6 +115,7 @@ declare -A joy_conf_map=(
   [a10mini]=none
   [g350]=dual
   [u8]=dual
+  [dr28s]=none
   [r36s]=dual
 )
 
@@ -138,12 +141,13 @@ declare -A ogage_conf_map=(
   [a10mini]=happy5
   [g350]=happy5
   [u8]=happy5
+  [dr28s]=happy5
   [r36s]=happy5
 )
 
 declare -A rotate_map=(
   [u8]=270
-  [r50s]=270
+  [dr28s]=270
 )
 
 rk915_set=("xf40h" "dc40v" "xf35h" "dc35v" "r36ultra" "k36s" "r36tmax") # 按需增删
