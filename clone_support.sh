@@ -77,6 +77,15 @@ sudo chmod 777 "$MOUNT_DIR/root/usr/local/bin/saturn.sh" 2>/dev/null || true
 sudo chmod 777 "$MOUNT_DIR/root/usr/local/bin/n64.sh" 2>/dev/null || true
 sudo chmod 777 "$MOUNT_DIR/root/usr/local/bin/pico8.sh" 2>/dev/null || true
 
+echo "== 注入 adc-key 服务脚本 =="
+sudo cp -f ./bin/adc-key/adckeys.py "$MOUNT_DIR/root/usr/local/bin/"
+sudo cp -f ./bin/adc-key/adckeys.sh "$MOUNT_DIR/root/usr/local/bin/"
+sudo cp -f ./bin/adc-key/adckeys.service "$MOUNT_DIR/root/etc/systemd/system/"
+sudo chmod 777 /usr/bin/adckeys.py 2>/dev/null || true
+sudo chmod 777 /usr/bin/adckeys.sh 2>/dev/null || true
+sudo chmod 644 /etc/systemd/system/adckeys.service 2>/dev/null || true
+
+
 echo "== 注入核心 =="
 sudo cp -f ./mod_so/64/* "$MOUNT_DIR/root/home/ark/.config/retroarch/cores/"
 sudo cp -f ./mod_so/32/* "$MOUNT_DIR/root/home/ark/.config/retroarch32/cores/"

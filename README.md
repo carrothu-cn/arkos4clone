@@ -13,7 +13,6 @@ Currently, I can only maintain the devices I personally own, but contributions a
 | **Brand**            | **Device**                               | **Files to Copy**                                      |
 |----------------------|------------------------------------------|--------------------------------------------------------|
 | **YMC**               | **YMC A10MINI**                        | `logo/480P/`, `kernel/common/`, `consoles/a10mini/`     |
-| **Diium**            | **Diium Dr28s**                         | `logo/480P-270/`, `kernel/common/`, `consoles/dr28s/`        |
 | **AISLPC**            | **GameConsole K36S**                    | `logo/480P/`, `kernel/common/`, `consoles/k36s/`        |
 |                      | **GameConsole R36T**                    | `logo/480P/`, `kernel/common/`, `consoles/k36s/`        |
 |                      | **GameConsole R36T MAX**                | `logo/720P/`, `kernel/common/`, `consoles/r36tmax/`     |
@@ -41,6 +40,8 @@ Currently, I can only maintain the devices I personally own, but contributions a
 |                      | **GameConsole O30S**                    | `logo/480P/`, `kernel/common/`, `consoles/r36h/` |
 | **SoySauce R36s**    | **Soy Sauce V03**                       | `logo/480P/`, `kernel/common/`, `consoles/sauce v03/`    |
 |                      | **Soy Sauce V04**                       | `logo/480P/`, `kernel/common/`, `consoles/sauce v04/`    |
+| **Diium(SZDiiER)**   | **Diium Dr28s**                         | `logo/480P-270/`, `kernel/common/`, `consoles/dr28s/`        |
+|                      | **SZDiiER D007(Plus)**                   | `logo/480P/`, `kernel/common/`, `consoles/d007/`      |
 | **XiFan HandHelds**   | **XiFan Mymini**                        | `logo/480P/`, `kernel/common/`, `consoles/mymini/`      |
 |                      | **XiFan R36Max**                        | `logo/720P/`, `kernel/common/`, `consoles/r36max/`      |
 |                      | **XiFan R36Pro**                        | `logo/480P/`, `kernel/common/`, `consoles/r36pro/`      |

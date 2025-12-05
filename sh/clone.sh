@@ -65,6 +65,7 @@ declare -A dtb2label=(
   [rk3326-u8-linux.dtb]=u8
   [rk3326-u8-v2-linux.dtb]=u8
   [rk3326-dr28s-linux.dtb]=dr28s
+  [rk3326-d007-linux.dtb]=d007
 )
 
 declare -A console_profile=(
@@ -90,6 +91,7 @@ declare -A console_profile=(
   [g350]=480p
   [u8]=800p480
   [dr28s]=480p
+  [d007]=480p
   [r36s]=480p
 )
 
@@ -116,6 +118,7 @@ declare -A joy_conf_map=(
   [g350]=dual
   [u8]=dual
   [dr28s]=none
+  [d007]=dual
   [r36s]=dual
 )
 
@@ -142,6 +145,7 @@ declare -A ogage_conf_map=(
   [g350]=happy5
   [u8]=happy5
   [dr28s]=happy5
+  [d007]=select
   [r36s]=happy5
 )
 
@@ -466,7 +470,22 @@ else
   echo "Playback Path is already set to ${STATE:-UNKNOWN}, no change."
 fi
 
-# 简体中文首启配置
+# D007: 动态启用 / 禁用 adckeys.service
+if [[ -f "$CONSOLE_FILE" ]]; then
+  cur_console="$(get_console_label)"
+
+  if [[ "$cur_console" == "d007" ]]; then
+    msg "Detected D007 -> enabling adckeys.service"
+    sudo systemctl daemon-reload || warn "daemon-reload failed"
+    sudo systemctl enable --now adckeys.service \
+      || warn "failed to enable/start adckeys.service"
+  else
+    msg "Not D007 -> disabling adckeys.service (if exists)"
+    { sudo systemctl disable --now adckeys.service; } >/dev/null 2>&1 || true
+  fi
+fi
+
+# 简体中文配置
 if [[ -f "/boot/.cn" ]]; then
   msg "Apply first-boot zh-CN localization"
   if grep -q "Language" /home/ark/.emulationstation/es_settings.cfg; then

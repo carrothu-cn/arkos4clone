@@ -296,22 +296,29 @@ var Consoles = []ConsoleConfig{
 	{
 		RealName: "dr28s",
 		BrandEntries: []BrandEntry{
-			{Brand: "Diium", DisplayName: "Diium Dr28s"},
+			{Brand: "Diium(SZDiiER)", DisplayName: "Diium Dr28s"},
 		},
 		ExtraSources: []string{"logo/480P-270/", "kernel/common/"},
+	},
+	{
+		RealName: "d007",
+		BrandEntries: []BrandEntry{
+			{Brand: "Diium(SZDiiER)", DisplayName: "SZDiiER D007(Plus)"},
+		},
+		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 }
 
 // 品牌列表
 var Brands = []string{
 	"YMC",
-	"Diium",
 	"AISLPC",
 	"Batlexp",
 	"Kinhank",
 	"Clone R36s",
 	"GameConsole",
 	"SaySouce R36s",
+	"Diium(SZDiiER)",
 	"XiFan HandHelds",
 	"Other",
 }
