@@ -38,6 +38,7 @@ Currently, I can only maintain the devices I personally own, but contributions a
 |                      | **GameConsole R36XX**                   | `logo/480P/`, `kernel/common/`, `consoles/origin panel4/` |
 |                      | **GameConsole R36H**                    | `logo/480P/`, `kernel/common/`, `consoles/r36h/` |
 |                      | **GameConsole O30S**                    | `logo/480P/`, `kernel/common/`, `consoles/r36h/` |
+|                      | **GameConsole R50S**                    | `logo/854x480P/`, `kernel/common/`, `consoles/r50s/` |
 | **SoySauce R36s**    | **Soy Sauce V03**                       | `logo/480P/`, `kernel/common/`, `consoles/sauce v03/`    |
 |                      | **Soy Sauce V04**                       | `logo/480P/`, `kernel/common/`, `consoles/sauce v04/`    |
 | **Diium(SZDiiER)**   | **Diium Dr28s**                         | `logo/480P-270/`, `kernel/common/`, `consoles/dr28s/`        |

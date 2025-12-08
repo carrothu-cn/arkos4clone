@@ -195,6 +195,13 @@ var Consoles = []ConsoleConfig{
 		ExtraSources: []string{"logo/480P/", "kernel/common/"},
 	},
 	{
+		RealName: "r50s",
+		BrandEntries: []BrandEntry{
+			{Brand: "GameConsole", DisplayName: "GameConsole R50S"},
+		},
+		ExtraSources: []string{"logo/854x480P/", "kernel/common/"},
+	},
+	{
 		RealName: "sauce v03",
 		BrandEntries: []BrandEntry{
 			{Brand: "SaySouce R36s", DisplayName: "Soy Sauce V03 (ArkOS4Clone kernel)"},
