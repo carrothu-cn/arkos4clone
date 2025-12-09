@@ -62,7 +62,7 @@ fi
 sudo chown -R 1002:1002 "$MOUNT_DIR/root/opt/351Files/" 2>/dev/null || true
 sudo chmod -R 755 "$MOUNT_DIR/root/opt/351Files/" 2>/dev/null || true
 
-echo "== 注入 retrorun 启动脚本 =="
+echo "== 注入启动脚本 =="
 sudo cp -f ./replace_file/*.sh "$MOUNT_DIR/root/usr/local/bin/"
 sudo chown root:root "$MOUNT_DIR/root/usr/local/bin/atomiswave.sh" 2>/dev/null || true
 sudo chown root:root "$MOUNT_DIR/root/usr/local/bin/dreamcast.sh" 2>/dev/null || true
@@ -129,7 +129,7 @@ fi
 
 echo "== 调整retrorun =="
 sudo cp -r ./replace_file/retrorun/retrorun32 "$MOUNT_DIR/root/usr/local/bin/"
-# sudo cp -r ./replace_file/retrorun/retrorun "$MOUNT_DIR/root/usr/local/bin/"
+sudo cp -r ./replace_file/retrorun/retrorun "$MOUNT_DIR/root/usr/local/bin/"
 
 echo "== ogage快捷键复制 =="
 sudo cp -r ./replace_file/ogage "$MOUNT_DIR/root/usr/local/bin/"
@@ -144,8 +144,8 @@ sudo cp -r "./replace_file/tools/Enable Quick Mode.sh" "$MOUNT_DIR/root/opt/syst
 sudo cp -r "./replace_file/tools/Enable Quick Mode.sh" "$MOUNT_DIR/root/usr/local/bin/" 2>/dev/null || true
 sudo cp -r "./replace_file/tools/Disable Quick Mode.sh" "$MOUNT_DIR/root/usr/local/bin/" 2>/dev/null || true
 
-echo "== 分支更新文件 =="
-# sudo cp -r ./replace_file/arkos_update_files/emulationstation "$MOUNT_DIR/root/usr/bin/emulationstation/emulationstation"
+echo "== 临时更新 =="
+sudo chmod 777 "$MOUNT_DIR/root/usr/local/bin/mediaplayer.sh"
 
 echo "== 删除不需要的文件 =="
 sudo rm -rf "$MOUNT_DIR/boot/BMPs" 2>/dev/null || true

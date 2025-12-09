@@ -67,7 +67,7 @@ elif [ -f "/boot/.console" ]; then
     CONSOLE_VAL="$(tr -d '\r\n' < /boot/.console 2>/dev/null)"
 
     case "$CONSOLE_VAL" in
-        u8)
+        u8|r50s|dr28s)
             DEVICENAME="U8"
             ;;
         mymini|xgb36)
@@ -140,7 +140,7 @@ elif [ -f "/boot/.console" ]; then
     CONSOLE_VAL="$(tr -d '\r\n' < /boot/.console 2>/dev/null)"
 
     case "$CONSOLE_VAL" in
-        u8)
+        u8|r50s|dr28s)
             DEVICENAME="U8"
             ;;
         mymini|xgb36)

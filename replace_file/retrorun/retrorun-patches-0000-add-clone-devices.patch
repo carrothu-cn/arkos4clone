@@ -1,0 +1,46 @@
+diff --git a/src/globals.cpp b/src/globals.cpp
+index 0d81cfa..93c3024 100755
+--- a/src/globals.cpp
++++ b/src/globals.cpp
+@@ -381,8 +381,14 @@ bool isRG353M()
+ {
+     return checkDeviceName((char *)"RG353M"); 
+ }
++bool isU8() {
++    return checkDeviceName((char *)"U8"); 
++}
++bool isMymini() {
++    return checkDeviceName((char *)"Mymini"); 
++}
+ bool hasDeviceRotatedScreen(){
+-   return  isRG351V() || isRG351MP() || isRG503() || isRG353V() || isRG353M();
++   return  isRG351V() || isRG351MP() || isRG503() || isRG353V() || isRG353M() || isMymini();
+ }
+ bool wideScreenNotRotated(){
+     return  isRG503();
+diff --git a/src/globals.h b/src/globals.h
+index 5ed5ff6..f8fdf8b 100755
+--- a/src/globals.h
++++ b/src/globals.h
+@@ -195,6 +195,8 @@ bool isRG552();
+ bool isRG503();
+ bool isRG353V();
+ bool isRG353M();
++bool isU8();
++bool isMymini();
+ bool hasDeviceRotatedScreen();
+ bool wideScreenNotRotated();
+ void resetDeviceName();
+diff --git a/src/main.cpp b/src/main.cpp
+index 35bbcad..5a1e5e2 100755
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -2151,7 +2151,7 @@ int main(int argc, char *argv[])
+     // but the parameter sesetnd via command line wins so if that is true we leave it true
+     if (!gpio_joypad)
+     {
+-        if (isRG351MP() || isRG552() )
++        if (isRG351MP() || isRG552() || isU8() )
+         {
+             gpio_joypad = true;
+         }

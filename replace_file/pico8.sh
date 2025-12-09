@@ -35,6 +35,8 @@ if [[ -f "/boot/.console" ]]; then
     res="1024,768"
   elif [[ "$CUR_VAL" == "u8" ]]; then
     res="800,480"
+  elif [[ "$CUR_VAL" == "r50s" ]]; then
+    res="854,480"
   else
     res="640,480"
   fi
