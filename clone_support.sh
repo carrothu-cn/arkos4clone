@@ -29,12 +29,16 @@ sudo chown -R 1002:1002 "$MOUNT_DIR/root/home/ark/.quirks/"
 echo "== 注入 clone 用配置 =="
 sudo mkdir -p "$MOUNT_DIR/root/opt/system/Clone" "$MOUNT_DIR/root/usr/bin"
 sudo cp -f ./sh/joyled.sh "$MOUNT_DIR/root/opt/system/Clone/"
+sudo cp -f ./sh/sdljoytest.sh "$MOUNT_DIR/root/opt/system/Clone/"
 sudo cp -f ./bin/mcu_led ./bin/ws2812 "$MOUNT_DIR/root/usr/bin/"
+sudo cp -f ./bin/sdljoymap  ./bin/sdljoytest "$MOUNT_DIR/root/usr/local/bin/"
 sudo chown -f 1002:1002 "$MOUNT_DIR/root/usr/bin/ws2812" || true
 sudo chown -f 1002:1002 "$MOUNT_DIR/root/usr/bin/mcu_led" || true
+sudo chown -f 1002:1002 "$MOUNT_DIR/root/usr/local/bin/sdljoytest" || true
+sudo chown -f 1002:1002 "$MOUNT_DIR/root/usr/local/bin/sdljoymap" || true
 sudo chown -R 1002:1002 "$MOUNT_DIR/root/opt/system/Clone"
 sudo chmod -R 755 "$MOUNT_DIR/root/opt/system/Clone"
-sudo chmod 755 "$MOUNT_DIR/root/usr/bin/mcu_led" "$MOUNT_DIR/root/usr/bin/ws2812"
+sudo chmod 755 "$MOUNT_DIR/root/usr/bin/mcu_led" "$MOUNT_DIR/root/usr/bin/ws2812" "$MOUNT_DIR/root/usr/local/bin/sdljoytest" "$MOUNT_DIR/root/usr/local/bin/sdljoymap"
 
 echo "== 注入 915 驱动 =="
 sudo mkdir -p "$MOUNT_DIR/root/usr/lib/firmware" \

@@ -89,8 +89,8 @@
 		<name>声音调整</name>
 	</game>
 	<game>
-		<path>./Clone/joyled.sh</path>
-		<name>摇杆灯控制</name>
+		<path>./Clone/sdljoytest.sh</path>
+		<name>SDL按键测试</name>
 	</game>
 	<game>
 		<path>./351Files.sh</path>
@@ -267,6 +267,12 @@
 	<game>
 		<path>./Advanced/Switch to SD2 for Roms.sh</path>
 		<name>切换使用 TF2 内游戏</name>
+		<playcount>3</playcount>
+		<lastplayed>20210501T203120</lastplayed>
+	</game>
+	<game>
+		<path>./Advanced/Read from SD1 and SD2 for Roms.sh</path>
+		<name>读取 TF1 和 TF2 双卡里的游戏</name>
 		<playcount>3</playcount>
 		<lastplayed>20210501T203120</lastplayed>
 	</game>
