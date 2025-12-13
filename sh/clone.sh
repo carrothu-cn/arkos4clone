@@ -330,14 +330,6 @@ apply_es_input() {
   fi
 }
 
-apply_emulationstation() {
-  if [[ -f "/boot/.cn" ]]; then
-    cp_if_exists "$QUIRKS_DIR/emulationstation/emulationstation.cn"     "/usr/bin/emulationstation/emulationstation"       "yes"
-  else
-    cp_if_exists "$QUIRKS_DIR/emulationstation/emulationstation.origin"     "/usr/bin/emulationstation/emulationstation"       "yes"
-  fi
-}
-
 apply_rotate_file() {
   local dtbval="$1"
   local prof="${rotate_map[$dtbval]:-0}"
@@ -379,7 +371,6 @@ apply_quirks_for() {
   apply_hotkey_conf "$dtbval"
   apply_profile_assets
   apply_es_input
-  apply_emulationstation
   apply_rotate_file "$dtbval"
 }
 

@@ -1,2 +1,2 @@
-cd /usr/bin/
+cd /usr/local/bin/
 ./sdljoytest > /dev/tty1 2>&1
