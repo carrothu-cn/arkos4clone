@@ -181,7 +181,7 @@ sudo rm -rf "$MOUNT_DIR/root/opt/system/DeviceType" 2>/dev/null || true
 # sudo rm -rf "$MOUNT_DIR/root/opt/system/Set Launchimage to vid.sh"
 sudo rm -rf "$MOUNT_DIR/root/opt/system/Change LED to Red.sh" 2>/dev/null || true
 sudo rm -rf "$MOUNT_DIR/root/opt/system/Advanced/Change Ports SDL.sh" 2>/dev/null || true
-sudo rm -rf "$MOUNT_DIR/root/opt/system/Advanced"/Restore*.sh 2>/dev/null || true
+find "$MOUNT_DIR/root/opt/system/Advanced" -name 'Restore*.sh' ! -name 'Restore ArkOS Settings.sh' -exec rm -f {} + 2>/dev/null || true
 sudo rm -rf "$MOUNT_DIR/root/opt/system/Advanced/Screen - Switch to Original Screen Timings.sh" 2>/dev/null || true
 sudo rm -rf "$MOUNT_DIR/root/opt/system/Advanced/Reset EmulationStation Controls.sh" 2>/dev/null || true
 sudo rm -rf "$MOUNT_DIR/root/opt/system/Advanced/Fix Global Hotkeys.sh" 2>/dev/null || true
