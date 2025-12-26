@@ -1,13 +1,13 @@
-From 4f63e4140c4005778379e83c57f8ab1d9aa259f4 Mon Sep 17 00:00:00 2001
-From: lcdyk0517 <lcdyk0517@qq.com>
-Date: Wed, 3 Dec 2025 12:27:58 +0000
-Subject: [PATCH] SDL2: hook Drastic
+From 2c15170342fd94121b3c4279726a237da1cde574 Mon Sep 17 00:00:00 2001
+From: lcdyk0517 <2670878301@qq.com>
+Date: Fri, 26 Dec 2025 01:26:59 +0000
+Subject: [PATCH] sdl2: hook Drastic related changes
 
 ---
  CMakeLists.txt          |    2 +-
- src/render/SDL_render.c | 2157 +++++++++++++++++++++++++++++++++++++++
+ src/render/SDL_render.c | 2212 +++++++++++++++++++++++++++++++++++++++
  src/video/SDL_video.c   |  233 +++++
- 3 files changed, 2391 insertions(+), 1 deletion(-)
+ 3 files changed, 2446 insertions(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index e45b53e20..f7ee0b435 100644
@@ -23,7 +23,7 @@ index e45b53e20..f7ee0b435 100644
    endif()
  
 diff --git a/src/render/SDL_render.c b/src/render/SDL_render.c
-index cc3d16959..28b231cc4 100644
+index cc3d16959..520937faa 100644
 --- a/src/render/SDL_render.c
 +++ b/src/render/SDL_render.c
 @@ -29,10 +29,19 @@
@@ -46,7 +46,7 @@ index cc3d16959..28b231cc4 100644
  /* as a courtesy to iOS apps, we don't try to draw when in the background, as
  that will crash the app. However, these apps _should_ have used
  SDL_AddEventWatch to catch SDL_APP_WILLENTERBACKGROUND events and stopped
-@@ -137,9 +146,1052 @@ static const SDL_RenderDriver *render_drivers[] = {
+@@ -137,9 +146,1107 @@ static const SDL_RenderDriver *render_drivers[] = {
  };
  #endif /* !SDL_RENDER_DISABLED */
  
@@ -424,6 +424,58 @@ index cc3d16959..28b231cc4 100644
 +		.tgt_rect = {
 +			{0, 0, 800, 480},
 +			{0, 0, 1920, 1080},
++		},
++	},
++};
++
++static struct nds_disp_resize disp_720x540[DISP_TGT_MODE_MAX] = {
++	[DISP_TGT_MODE_2DS] = {
++		.tgt_rect = {
++            // 上屏2倍，下屏0.75倍
++			{104, 0, 512, 384},
++			{264, 396, 192, 144},
++		},
++	},
++	[DISP_TGT_MODE_V_ORI] = {
++		.tgt_rect = {
++            // 上下都是1.40625倍
++			{180, 0, 360, 270},
++			{180, 270, 360, 270},
++		},
++	},
++	[DISP_TGT_MODE_TOP_FULL] = {
++		.tgt_rect = {
++             // 上屏2.5倍，下屏0.3125倍
++			{40, 0, 640, 480},
++			{320, 240, 80, 60},
++		},
++	},
++	[DISP_TGT_MODE_TOP_CONN_BOTTOM] = {
++		.tgt_rect = {
++             // 上屏1.8125倍，下屏1倍
++			{128, 0, 464, 348},
++			{232, 348, 256, 192},
++		},
++	},
++	[DISP_TGT_MODE_H_SINGLE] = {
++		.tgt_rect = {
++            // 单屏2.75倍最大
++			{8, 6, 704, 528},
++			{0, 0, 0, 0},
++		},
++	},
++    [DISP_TGT_MODE_TRANSPARENT] = {
++		.tgt_rect = {
++            // 单屏2.75倍最大，画中画1倍
++			{8, 6, 704, 528},
++			{456, 6, 256, 192},
++		},
++	},
++	[DISP_TGT_MODE_MENU] = {
++		.tgt_rect = {
++            // 菜单
++			{0, 0, 800, 480},
++			{0, 0, 720, 540},
 +		},
 +	},
 +};
@@ -982,6 +1034,9 @@ index cc3d16959..28b231cc4 100644
 +    } else if (rect.w == 1024 && rect.h == 768) {
 +        res_sel = disp_1024x768;
 +        nds_bezels = "resources/bg/1024x768/";
++    } else if (rect.w == 720 && rect.h == 540) {
++        res_sel = disp_720x540;
++        nds_bezels = "resources/bg/720x540/";
 +    } else if (rect.w == 640 && rect.h == 480) {
 +        res_sel = disp_640x480;
 +        nds_bezels = "resources/bg/640x480/";
@@ -1099,7 +1154,7 @@ index cc3d16959..28b231cc4 100644
  static SDL_INLINE void DebugLogRenderCommands(const SDL_RenderCommand *cmd)
  {
  #if 0
-@@ -954,6 +2006,67 @@ static void SDL_CalculateSimulatedVSyncInterval(SDL_Renderer *renderer, SDL_Wind
+@@ -954,6 +2061,67 @@ static void SDL_CalculateSimulatedVSyncInterval(SDL_Renderer *renderer, SDL_Wind
  }
  #endif /* !SDL_RENDER_DISABLED */
  
@@ -1167,7 +1222,7 @@ index cc3d16959..28b231cc4 100644
  SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
  {
  #ifndef SDL_RENDER_DISABLED
-@@ -1127,6 +2240,9 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
+@@ -1127,6 +2295,9 @@ SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags)
  #if defined(__ANDROID__)
      Android_ActivityMutex_Unlock();
  #endif
@@ -1177,7 +1232,7 @@ index cc3d16959..28b231cc4 100644
      return renderer;
  
  error:
-@@ -2447,6 +3563,8 @@ int SDL_RenderSetLogicalSize(SDL_Renderer *renderer, int w, int h)
+@@ -2447,6 +3618,8 @@ int SDL_RenderSetLogicalSize(SDL_Renderer *renderer, int w, int h)
      renderer->logical_w = w;
      renderer->logical_h = h;
  
@@ -1186,7 +1241,7 @@ index cc3d16959..28b231cc4 100644
      return UpdateLogicalSize(renderer, SDL_TRUE);
  }
  
-@@ -3423,11 +4541,1049 @@ int SDL_RenderFillRectsF(SDL_Renderer *renderer,
+@@ -3423,11 +4596,1049 @@ int SDL_RenderFillRectsF(SDL_Renderer *renderer,
      return retval < 0 ? retval : FlushRenderCommandsIfNotBatching(renderer);
  }
  
@@ -2236,7 +2291,7 @@ index cc3d16959..28b231cc4 100644
      if (dstrect) {
          dstfrect.x = (float)dstrect->x;
          dstfrect.y = (float)dstrect->y;
-@@ -4405,6 +6561,7 @@ void SDL_DestroyRendererWithoutFreeing(SDL_Renderer *renderer)
+@@ -4405,6 +6616,7 @@ void SDL_DestroyRendererWithoutFreeing(SDL_Renderer *renderer)
  void SDL_DestroyRenderer(SDL_Renderer *renderer)
  {
      CHECK_RENDERER_MAGIC_BUT_NOT_DESTROYED_FLAG(renderer,);
@@ -2498,14 +2553,6 @@ index 2f6c631d1..d9241c176 100644
 +    detour_hook_64(FUN_PRINT_STRING, (intptr_t)sdl_print_string);
 +    //detour_hook(FUN_BLIT_SCREEN_MENU, (intptr_t)sdl_blit_screen_menu);
 +    //detour_hook(FUN_UPDATE_SCREEN, (intptr_t)sdl_update_screen);
-+
-     /* We're ready to go! */
-     return 0;
- 
--- 
-2.20.1
-
-_SCREEN, (intptr_t)sdl_update_screen);
 +
      /* We're ready to go! */
      return 0;

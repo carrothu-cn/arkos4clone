@@ -37,15 +37,20 @@ fi
 
 sudo ./gptokeyb &
 
-if [[ -f "/opt/drastic/on" ]]; then
-  if [[ -f "/boot/.console" ]]; then
-    CUR_VAL="$(tr -d '\r\n' < "/boot/.console" || true)"
-    if [[ "$CUR_VAL" == "u8" || "$CUR_VAL" == "dr28s" || "$CUR_VAL" == "r50s" ]]; then
-      LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10.rotated ./drastic "$1"
-    else
-      LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10 ./drastic "$1"
-    fi
-  fi
+if [[ -f /opt/drastic/on && -f /boot/.console ]]; then
+  CUR_VAL="$(tr -d '\r\n' < "/boot/.console" || true)"
+  case "$CUR_VAL" in
+    u8|dr28s|r50s)
+      LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10.rotate270
+    ;;
+    xf28|a10miniv2)
+      LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10.rotate180
+    ;;
+    *)
+      LD_PRELOAD=./libs/libSDL2-2.0.so.0.3200.10
+    ;;
+  esac
+  LD_PRELOAD="$LD_PRELOAD" ./drastic "$1"
 else
   ./drastic "$1"
 fi

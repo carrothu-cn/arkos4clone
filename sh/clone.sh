@@ -346,12 +346,12 @@ apply_rotate_file() {
   case "$prof" in
     270)
       msg "Using SDL=rotate270 + RetroArch=270 for console=$dtbval"
-      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3000.10.rotate270" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3000.10" "yes"
-      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3000.10.rotate270" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3000.10" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3200.10.rotate270" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3200.10.rotate270" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10" "yes"
       sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2.so /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (64)"
-      sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3000.10 /usr/lib/aarch64-linux-gnu/libSDL2.so || warn "ln failed: libSDL2.so (64)"
+      sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10 /usr/lib/aarch64-linux-gnu/libSDL2.so || warn "ln failed: libSDL2.so (64)"
       sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2.so /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (32)"
-      sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3000.10 /usr/lib/arm-linux-gnueabihf/libSDL2.so || warn "ln failed: libSDL2.so (32)"
+      sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10 /usr/lib/arm-linux-gnueabihf/libSDL2.so || warn "ln failed: libSDL2.so (32)"
 
       cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch32.270" "/opt/retroarch/bin/retroarch32" "yes"
 	    cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch.270" "/opt/retroarch/bin/retroarch" "yes"
@@ -370,12 +370,12 @@ apply_rotate_file() {
       ;;
     *)
       msg "Using SDL=0deg + RetroArch=0deg for console=$dtbval"
-      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3000.10.r36s" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3000.10" "yes"
-      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3000.10.r36s" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3000.10" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3200.10.r36s" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3200.10.r36s" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10" "yes"
       sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2.so /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (64)"
-      sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3000.10 /usr/lib/aarch64-linux-gnu/libSDL2.so || warn "ln failed: libSDL2.so (64)"
+      sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10 /usr/lib/aarch64-linux-gnu/libSDL2.so || warn "ln failed: libSDL2.so (64)"
       sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2.so /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (32)"
-      sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3000.10 /usr/lib/arm-linux-gnueabihf/libSDL2.so || warn "ln failed: libSDL2.so (32)"
+      sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10 /usr/lib/arm-linux-gnueabihf/libSDL2.so || warn "ln failed: libSDL2.so (32)"
 
       cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch32.r36s" "/opt/retroarch/bin/retroarch32" "yes"
 	    cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch.r36s" "/opt/retroarch/bin/retroarch" "yes"
