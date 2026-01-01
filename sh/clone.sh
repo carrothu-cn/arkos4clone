@@ -43,6 +43,7 @@ fi
 
 declare -A dtb2label=(
   [rk3326-mymini-linux.dtb]=mymini
+  [rk3326-mini40-linux.dtb]=mini40
   [rk3326-xf35h-linux.dtb]=xf35h
   [rk3326-r36pro-linux.dtb]=r36pro
   [rk3326-r36max-linux.dtb]=r36max
@@ -69,10 +70,12 @@ declare -A dtb2label=(
   [rk3326-d007-linux.dtb]=d007
   [rk3326-r50s-linux.dtb]=r50s
   [rk3326-rgb20s-linux.dtb]=rgb20s
+  [rk3326-xf28-linux.dtb]=xf28
 )
 
 declare -A console_profile=(
   [mymini]=480p
+  [mini40]=480p
   [xf35h]=480p
   [r36pro]=480p
   [r36max]=720p
@@ -98,11 +101,13 @@ declare -A console_profile=(
   [d007]=480p
   [r50s]=854p480
   [rgb20s]=480p
+  [xf28]=480p
   [r36s]=480p
 )
 
 declare -A joy_conf_map=(
   [mymini]=single
+  [mini40]=single
   [xf35h]=dual
   [r36pro]=dual
   [r36max]=dual
@@ -128,11 +133,13 @@ declare -A joy_conf_map=(
   [d007]=dual
   [r50s]=dual
   [rgb20s]=dual
+  [xf28]=single
   [r36s]=dual
 )
 
 declare -A ogage_conf_map=(
   [mymini]=select
+  [mini40]=select
   [xf35h]=select
   [r36pro]=happy5
   [r36max]=happy5
@@ -158,6 +165,7 @@ declare -A ogage_conf_map=(
   [d007]=select
   [r50s]=happy5
   [rgb20s]=happy5
+  [xf28]=select
   [r36s]=happy5
 )
 
@@ -166,11 +174,11 @@ declare -A rotate_map=(
   [dr28s]=270
   [r50s]=270
   [a10miniv2]=180
+  [xf28]=90
 )
 
 rk915_set=("xf40h" "dc40v" "xf35h" "dc35v" "r36ultra" "k36s" "r36tmax") # 按需增删
-ga_set=("mymini" "xgb36")                                               # 按需增删
-spi_set=("dc35v" "dc40v")                                               # 按需增删
+spi_set=("dc35v" "dc40v" "xf28")                                               # 按需增删
 
 # LABEL：优先用 DTB 映射；没有映射就退回 r36s
 LABEL="${dtb2label[$DTB]:-r36s}"
@@ -317,26 +325,9 @@ apply_profile_assets() {
 
 apply_es_input() {
   [[ -f "$CONSOLE_FILE" ]] || return 0
-
-  local cur_console use_ga="false"
-  cur_console="$(get_console_label)"
-
-  for x in "${ga_set[@]}"; do
-    if [[ "$cur_console" == "$x" ]]; then
-      use_ga="true"
-      break
-    fi
-  done
-
-  if [[ "$use_ga" == "true" ]]; then
-    msg "apply_es_input: console=$cur_console use=odroidgo advance"
-    cp_if_exists "$QUIRKS_DIR/es_input_ga.cfg" "/etc/emulationstation/es_input.cfg" "yes"
-    cp_if_exists "$QUIRKS_DIR/retroarch64_ga.cfg" "/home/ark/.config/retroarch/retroarch.cfg" "yes"
-    cp_if_exists "$QUIRKS_DIR/retroarch32_ga.cfg" "/home/ark/.config/retroarch32/retroarch.cfg" "yes"
-  else
-    msg "apply_es_input: console=$cur_console use=odroidgo super"
-    cp_if_exists "$QUIRKS_DIR/es_input_gs.cfg" "/etc/emulationstation/es_input.cfg" "yes"
-  fi
+  cp_if_exists "$QUIRKS_DIR/retroarch64.cfg" "/home/ark/.config/retroarch/retroarch.cfg" "yes"
+  cp_if_exists "$QUIRKS_DIR/retroarch32.cfg" "/home/ark/.config/retroarch32/retroarch.cfg" "yes"
+  cp_if_exists "$QUIRKS_DIR/es_input.cfg" "/etc/emulationstation/es_input.cfg" "yes"
 }
 
 apply_rotate_file() {
@@ -368,17 +359,29 @@ apply_rotate_file() {
       cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch32.180" "/opt/retroarch/bin/retroarch32" "yes"
 	    cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch.180" "/opt/retroarch/bin/retroarch" "yes"
       ;;
-    *)
-      msg "Using SDL=0deg + RetroArch=0deg for console=$dtbval"
-      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3200.10.r36s" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10" "yes"
-      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3200.10.r36s" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10" "yes"
+    90)
+      msg "Using SDL=rotate90 + RetroArch=90 for console=$dtbval"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3200.10.rotate90" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3200.10.rotate90" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10" "yes"
       sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2.so /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (64)"
       sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10 /usr/lib/aarch64-linux-gnu/libSDL2.so || warn "ln failed: libSDL2.so (64)"
       sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2.so /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (32)"
       sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10 /usr/lib/arm-linux-gnueabihf/libSDL2.so || warn "ln failed: libSDL2.so (32)"
 
-      cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch32.r36s" "/opt/retroarch/bin/retroarch32" "yes"
-	    cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch.r36s" "/opt/retroarch/bin/retroarch" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch32.90" "/opt/retroarch/bin/retroarch32" "yes"
+	    cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch.90" "/opt/retroarch/bin/retroarch" "yes"
+      ;;
+    *)
+      msg "Using SDL=0deg + RetroArch=0deg for console=$dtbval"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/32/libSDL2-2.0.so.0.3200.10.norotate" "/usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10" "yes"
+      cp_if_exists "$QUIRKS_DIR/rotate/sdl2/64/libSDL2-2.0.so.0.3200.10.norotate" "/usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10" "yes"
+      sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2.so /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (64)"
+      sudo ln -sfv /usr/lib/aarch64-linux-gnu/libSDL2-2.0.so.0.3200.10 /usr/lib/aarch64-linux-gnu/libSDL2.so || warn "ln failed: libSDL2.so (64)"
+      sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2.so /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0 || warn "ln failed: libSDL2-2.0.so.0 (32)"
+      sudo ln -sfv /usr/lib/arm-linux-gnueabihf/libSDL2-2.0.so.0.3200.10 /usr/lib/arm-linux-gnueabihf/libSDL2.so || warn "ln failed: libSDL2.so (32)"
+
+      cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch32.norotate" "/opt/retroarch/bin/retroarch32" "yes"
+	    cp_if_exists "$QUIRKS_DIR/rotate/retroarch/retroarch.norotate" "/opt/retroarch/bin/retroarch" "yes"
       ;;
   esac
   sudo chmod 777 /opt/retroarch/bin/* || true
