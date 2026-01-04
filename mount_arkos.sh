@@ -98,7 +98,20 @@ do_mount() {
 
   # mount with gentle defaults (ro for boot if you prefer safety)
   mount_if_not "$p1" "$BOOT_MNT" vfat "rw,utf8,umask=000"
-  mount_if_not "$p2" "$ROOT_MNT" ext4
+
+  # Check if root partition is ext4 or btrfs
+  local root_fstype
+  root_fstype=$(blkid -o value -s TYPE "$p2")
+
+  if [[ "$root_fstype" == "ext4" ]]; then
+    mount_if_not "$p2" "$ROOT_MNT" ext4
+  elif [[ "$root_fstype" == "btrfs" ]]; then
+    mount_if_not "$p2" "$ROOT_MNT" btrfs
+  else
+    echo "Unsupported file system on root partition: $root_fstype"
+    exit 1
+  fi
+  
   # exfat utils differ; use 'exfat' fstype and safe options if available
   if grep -qw exfat /proc/filesystems 2>/dev/null; then
     mount_if_not "$p3" "$ROMS_MNT" exfat "rw,uid=0,gid=0,umask=000"
