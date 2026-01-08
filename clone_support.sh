@@ -85,9 +85,9 @@ echo "== 注入 adc-key 服务脚本 =="
 sudo cp -f ./bin/adc-key/adckeys.py "$MOUNT_DIR/root/usr/local/bin/"
 sudo cp -f ./bin/adc-key/adckeys.sh "$MOUNT_DIR/root/usr/local/bin/"
 sudo cp -f ./bin/adc-key/adckeys.service "$MOUNT_DIR/root/etc/systemd/system/"
-sudo chmod 777 /usr/bin/adckeys.py 2>/dev/null || true
-sudo chmod 777 /usr/bin/adckeys.sh 2>/dev/null || true
-sudo chmod 644 /etc/systemd/system/adckeys.service 2>/dev/null || true
+sudo chmod 777 "$MOUNT_DIR/usr/local/bin/adckeys.py" 2>/dev/null || true
+sudo chmod 777 "$MOUNT_DIR/usr/local/bin/adckeys.sh" 2>/dev/null || true
+sudo chmod 644 "$MOUNT_DIR/etc/systemd/system/adckeys.service" 2>/dev/null || true
 
 
 echo "== 注入核心 =="
@@ -101,7 +101,7 @@ sudo chmod 777 "$MOUNT_DIR/root/etc/emulationstation/es_systems.cfg" 2>/dev/null
 sudo chmod 777 "$MOUNT_DIR/root/etc/emulationstation/es_systems.cfg.dual" 2>/dev/null || true
 sudo cp -f ./replace_file/emulationstation2.po "$MOUNT_DIR/root/usr/bin/emulationstation/resources/locale/zh-CN/"
 
-sudo rm -rf 777 "$MOUNT_DIR/root/etc/emulationstation/es_input.cfg" 2>/dev/null || true
+sudo rm -rf "$MOUNT_DIR/root/etc/emulationstation/es_input.cfg" 2>/dev/null || true
 
 sudo cp -r ./replace_file/emulationstation "$MOUNT_DIR/root/usr/bin/emulationstation/emulationstation"
 

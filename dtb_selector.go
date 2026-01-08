@@ -440,10 +440,6 @@ func p(s string) {
 	fmt.Println(s)
 }
 
-func praw(s string) {
-	fmt.Println(s)
-}
-
 func introAndWaitFancy() {
 	fancyHeader("DTB Selector - 请选择机型 / Select Your Console")
 	p(c("\n================ Welcome 欢迎使用 ================", HDR))
