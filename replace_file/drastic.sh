@@ -35,7 +35,7 @@ else
     sudo ln -sf "$target" /opt/drastic/usrcheat.dat
 fi
 
-sudo ./gptokeyb &
+sudo ./drastic_hotkeys &
 
 if [[ -f /opt/drastic/on && -f /boot/.console ]]; then
   CUR_VAL="$(tr -d '\r\n' < "/boot/.console" || true)"
@@ -58,7 +58,7 @@ else
   ./drastic "$1"
 fi
 
-GPTOKEYB_PID="$(pidof gptokeyb 2>/dev/null || true)"
+GPTOKEYB_PID="$(pidof drastic_hotkeys 2>/dev/null || true)"
 if [[ -n "$GPTOKEYB_PID" ]]; then
   sudo kill -9 $GPTOKEYB_PID
 fi

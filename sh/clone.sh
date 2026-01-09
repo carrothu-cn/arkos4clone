@@ -53,17 +53,17 @@ maybe_apply_ota_update() {
     echo "[OTA] Workdir:"
     echo "  $tmpdir"
     echo
-    echo "[OTA] Step 1/2: Extracting update.tar"
+    echo "[OTA] Step 1/2: Extracting minimal files"
     echo "[OTA] (Do NOT power off)"
     echo
   } > "$TTY"
 
-  msg "OTA extracting to: $tmpdir"
+  msg "OTA extracting minimal to: $tmpdir"
 
-  # ===== 解压：必须有“活着”的输出 =====
+  # ===== 只解压最小文件：VERSION + install.sh + CHUNKS =====
   if tar --help 2>/dev/null | grep -q -- '--checkpoint'; then
-    # 每 200 个条目输出一次
     if ! sudo tar -xf "$tar_path" -C "$tmpdir" \
+        VERSION install.sh CHUNKS \
         --checkpoint=200 \
         --checkpoint-action=exec='sh -c "echo \"[OTA] extracting... ($TAR_CHECKPOINT files)\""' \
         2>&1 | tee -a "$LOG_FILE" > "$TTY"; then
@@ -73,9 +73,9 @@ maybe_apply_ota_update() {
       return 0
     fi
   else
-    # fallback（极少数情况）
     echo "[OTA] extracting... please wait." > "$TTY"
     if ! sudo tar -xf "$tar_path" -C "$tmpdir" \
+         VERSION install.sh CHUNKS \
          2>&1 | tee -a "$LOG_FILE" >> "$TTY"; then
       err "OTA extract failed"
       echo "[OTA] Extract FAILED. See $LOG_FILE" > "$TTY"
@@ -102,7 +102,8 @@ maybe_apply_ota_update() {
 
   sudo chmod +x "$tmpdir/install.sh" 2>/dev/null || true
 
-  if ! sudo bash "$tmpdir/install.sh" \
+  # 关键：把外层 update.tar 路径传给 install.sh，让它从 update.tar 流式抽取 chunks/ 与 uboot/
+  if ! sudo env OTA_TAR_PATH="$tar_path" bash "$tmpdir/install.sh" \
        2>&1 | tee -a "$LOG_FILE" >> "$TTY"; then
     err "OTA install failed"
     echo "[OTA] Install FAILED. See $LOG_FILE" >> "$TTY"
@@ -643,7 +644,7 @@ STATE="$(
   amixer get 'Playback Path' 2>/dev/null | grep -oP "Item0: '\K\w+" || true
 )"
 
-if [[ "$STATE" = "OFF" ]]; then
+if [[ "$STATE" = "OFF" || "$STATE" = "HP" ]]; then
   echo "Playback Path is OFF, switching to SPK..."
   amixer set 'Playback Path' 'SPK' || true
   sudo alsactl store || true

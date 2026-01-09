@@ -2,17 +2,28 @@
 set -euo pipefail
 
 # ============================================
-# ArkOS4Clone OTA 升级包制作脚本
+# ArkOS4Clone OTA 升级包制作脚本（chunk 流式安装 + modules 复制 + uboot 刷写）
 #
 # 输出文件：
 #   ./update.tar   （最终放到设备的 /roms/update.tar）
 #
 # update.tar 内部结构：
-#   VERSION            # 版本标识
-#   install.sh         # 设备端执行的安装脚本
-#   payload/
-#     boot/            # 最终同步到 /boot
-#     root/            # 最终同步到 /
+#   VERSION
+#   install.sh         # 设备端执行脚本（支持从 update.tar 流式抽取 chunks/ 与 uboot/）
+#   CHUNKS             # chunk 清单（顺序执行）
+#   chunks/
+#     00_boot.tar
+#     10_root_usr_etc.tar
+#     20_root_opt.tar
+#     30_root_home.tar
+#     40_root_misc.tar
+#   uboot/
+#     idbloader.img
+#     uboot.img
+#     trust.img
+#
+# 目标：
+# - 设备端不整包解压到 /home/ark（只解最小文件），其余均从 update.tar 流式抽取并解包/刷写
 # ============================================
 
 # 生成版本信息
@@ -22,13 +33,12 @@ VERSION="ArkOS4Clone-${UPDATE_DATE}-${MODDER}"
 
 # 工作目录与临时构建目录
 WORKDIR="$(pwd)"
-STAGE="${WORKDIR}/_ota_stage"
+STAGE="/tmp/_ota_stage"
 PAYLOAD_BOOT="${STAGE}/payload/boot"
 PAYLOAD_ROOT="${STAGE}/payload/root"
 OUT_TAR="${WORKDIR}/update.tar"
 
 # boot 分区（FAT32）专用 rsync 参数
-# 不写入 owner / group / perms，避免 FAT32 报错
 RSYNC_BOOT_OPTS="-rltD --no-owner --no-group --no-perms --omit-dir-times"
 
 # 清理旧的构建目录
@@ -155,6 +165,13 @@ cp -r "./replace_file/tools/Switch to main SD for Roms.sh" \
 cp -r "./replace_file/tools/Switch to SD2 for Roms.sh" \
       "$PAYLOAD_ROOT/usr/local/bin/" 2>/dev/null || true
 
+# ========= 新增：复制 replace_file/modules -> /usr/lib/modules =========
+echo "== 注入 modules（replace_file/modules -> /usr/lib/modules） =="
+if [[ -d "./replace_file/modules" ]]; then
+  mkdir -p "$PAYLOAD_ROOT/usr/lib/modules"
+  cp -a ./replace_file/modules/. "$PAYLOAD_ROOT/usr/lib/modules/" 2>/dev/null || true
+fi
+
 # ========= ROMS.TAR 被明确排除（OTA 不处理用户数据） =========
 echo "== 跳过 roms.tar（设计如此） =="
 
@@ -173,6 +190,13 @@ set -euo pipefail
 
 BASE="$(cd "$(dirname "$0")" && pwd)"
 PAYLOAD="$BASE/payload"
+
+# 外层 update.tar 的路径（由 maybe_apply_ota_update 传入）
+OTA_TAR_PATH="${OTA_TAR_PATH:-}"
+CHUNKS_FILE="$BASE/CHUNKS"
+
+# 兼容外层脚本的日志文件（若外层没传，就用默认）
+LOG_FILE="${LOG_FILE:-/boot/clone_log.txt}"
 
 have_systemctl() { command -v systemctl >/dev/null 2>&1; }
 
@@ -198,15 +222,80 @@ BOOT_MP="$(findmnt -n -o TARGET /dev/mmcblk0p1 2>/dev/null || true)"
 # 重新挂载 boot 为可写（失败不致命）
 mount -o remount,rw "$BOOT_MP" 2>/dev/null || true
 
-echo "[OTA] copy boot -> $BOOT_MP"
-if [[ -d "$PAYLOAD/boot" ]]; then
-  rsync -rltD --omit-dir-times --no-owner --no-group --no-perms \
-    "$PAYLOAD/boot/" "$BOOT_MP/"
+apply_chunk_stream() {
+  local target="$1"   # boot | root
+  local member="$2"   # chunks/xx.tar
+  local OTA_TMP="/home/ark/.ota"
+  local dest="/"
+  [[ "$target" == "boot" ]] && dest="$BOOT_MP"
+  echo "[OTA] apply $target <- $member (via $OTA_TMP) -> $dest"
+  # 确保临时目录存在且干净
+  rm -rf "$OTA_TMP" 2>/dev/null || true
+  mkdir -p "$OTA_TMP"
+  # 1流式解包到 /home/ark/.ota
+  tar -xO -f "$OTA_TAR_PATH" "$member" | tar -xf - -C "$OTA_TMP"
+  # 2rsync 覆盖到目标（关键：不改已有属主）
+  if [[ "$target" == "boot" ]]; then
+    rsync -rltD --omit-dir-times --no-owner --no-group --no-perms \
+      "$OTA_TMP/" "$dest/"
+  else
+    rsync -a --no-owner --no-group \
+      "$OTA_TMP/" "$dest/"
+  fi
+  # 3清理临时目录
+  rm -rf "$OTA_TMP"
+}
+
+
+apply_legacy_rsync() {
+  echo "[OTA] legacy mode: rsync payload"
+  echo "[OTA] copy boot -> $BOOT_MP"
+  if [[ -d "$PAYLOAD/boot" ]]; then
+    rsync -rltD --omit-dir-times --no-owner --no-group --no-perms \
+      "$PAYLOAD/boot/" "$BOOT_MP/"
+  fi
+
+  echo "[OTA] copy root -> /"
+  if [[ -d "$PAYLOAD/root" ]]; then
+    rsync -aH "$PAYLOAD/root/" "/"
+  fi
+}
+
+# ====== 应用更新（优先 chunks 流式模式） ======
+if [[ -n "$OTA_TAR_PATH" && -f "$OTA_TAR_PATH" && -f "$CHUNKS_FILE" ]]; then
+  while read -r t m; do
+    [[ -z "${t:-}" || -z "${m:-}" ]] && continue
+    apply_chunk_stream "$t" "$m"
+    sync || true
+  done < "$CHUNKS_FILE"
+else
+  apply_legacy_rsync
 fi
 
-echo "[OTA] copy root -> /"
-if [[ -d "$PAYLOAD/root" ]]; then
-  rsync -aH "$PAYLOAD/root/" "/"
+# ========= 新增：刷写 uboot（从外层 update.tar 流式读入，避免落盘） =========
+dd_from_tar() {
+  local member="$1"
+  local seek="$2"
+
+  # member 必须存在才刷写
+  if ! tar -tf "$OTA_TAR_PATH" "$member" >/dev/null 2>&1; then
+    echo "[OTA] uboot member not found, skip: $member"
+    return 0
+  fi
+
+  echo "[OTA] flashing: $member (seek=$seek)"
+  # 按你给的写法：dd if=xxx of=/dev/mmcblk0 conv=notrunc bs=512 seek=...
+  # 这里 if= 用的是 stdin（tar -xO 输出），语义等价于 if=member
+  # dd 输出进 LOG_FILE（同时也会被外层 tee 收到）
+  tar -xO -f "$OTA_TAR_PATH" "$member" | dd of=/dev/mmcblk0 conv=notrunc bs=512 seek="$seek" 2>&1 | tee -a "$LOG_FILE"
+}
+
+# 仅当 /dev/mmcblk0 存在时执行
+if [[ -b "/dev/mmcblk0" && -n "$OTA_TAR_PATH" && -f "$OTA_TAR_PATH" ]]; then
+  dd_from_tar "uboot/idbloader.img" 64
+  dd_from_tar "uboot/uboot.img" 16384
+  dd_from_tar "uboot/trust.img" 24576
+  sync || true
 fi
 
 # plymouth title: ArkOS4Clone (MMDDYYYY)(MODDER)
@@ -286,10 +375,61 @@ EOF
 chmod +x "$STAGE/install.sh"
 
 # -----------------------------
-# 打包生成 update.tar
+# 新增：把 uboot 三件套打进 update.tar（不落 payload，直接放 uboot/）
+# -----------------------------
+echo "== 打包 uboot 镜像（uboot/*.img） =="
+mkdir -p "$STAGE/uboot"
+cp -f ./uboot/idbloader.img "$STAGE/uboot/" 2>/dev/null || true
+cp -f ./uboot/uboot.img     "$STAGE/uboot/" 2>/dev/null || true
+cp -f ./uboot/trust.img     "$STAGE/uboot/" 2>/dev/null || true
+
+# -----------------------------
+# 生成 chunks + CHUNKS 清单（分包流式）
+# -----------------------------
+echo "== 生成 chunks（分包） =="
+
+CHUNK_DIR="$STAGE/chunks"
+rm -rf "$CHUNK_DIR" 2>/dev/null || true
+mkdir -p "$CHUNK_DIR"
+ls -lh "$CHUNK_DIR" || true
+
+# boot chunk
+tar --numeric-owner --owner=0 --group=0 \
+  -C "$PAYLOAD_BOOT" -cf "$CHUNK_DIR/00_boot.tar" .
+
+# root chunks（按目录拆，降低单次解包峰值）
+tar --numeric-owner --owner=0 --group=0 \
+  -C "$PAYLOAD_ROOT" -cf "$CHUNK_DIR/10_root_usr_etc.tar" \
+  ./usr ./etc 2>/dev/null || true
+
+tar --numeric-owner --owner=0 --group=0 \
+  -C "$PAYLOAD_ROOT" -cf "$CHUNK_DIR/20_root_opt.tar" \
+  ./opt 2>/dev/null || true
+
+tar --numeric-owner --owner=0 --group=0 \
+  -C "$PAYLOAD_ROOT" -cf "$CHUNK_DIR/30_root_home.tar" \
+  ./home 2>/dev/null || true
+
+tar --numeric-owner --owner=0 --group=0 \
+  -C "$PAYLOAD_ROOT" -cf "$CHUNK_DIR/40_root_misc.tar" \
+  ./var ./lib ./sbin ./bin ./run ./root ./media ./mnt ./tmp 2>/dev/null || true
+
+rm -rf "$STAGE/CHUNKS" 2>/dev/null || true
+cat > "$STAGE/CHUNKS" <<'EOF'
+boot chunks/00_boot.tar
+root chunks/10_root_usr_etc.tar
+root chunks/20_root_opt.tar
+root chunks/30_root_home.tar
+root chunks/40_root_misc.tar
+EOF
+echo "== DEBUG: list chunks =="
+ls -lh "$CHUNK_DIR" || true
+# -----------------------------
+# 打包生成 update.tar（包含：VERSION/install.sh/CHUNKS/chunks + uboot）
 # -----------------------------
 sudo rm -f "$OUT_TAR"
-tar --numeric-owner --owner=0 --group=0 -C "$STAGE" -cf "$OUT_TAR" .
+tar --numeric-owner --owner=0 --group=0 -C "$STAGE" -cf "$OUT_TAR" \
+  VERSION install.sh CHUNKS chunks uboot
 
 # 清理临时构建目录
 rm -rf "$STAGE"
