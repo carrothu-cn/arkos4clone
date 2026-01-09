@@ -24,6 +24,7 @@ GPTOKEYB_BIN="${GPTOKEYB_BIN:-/opt/inttools/gptokeyb}"
 SDL_DB_PATH="${SDL_DB_PATH:-/opt/inttools/gamecontrollerdb.txt}"
 KEYS_GPTK_PATH="${KEYS_GPTK_PATH:-/opt/inttools/keys.gptk}"
 CONSOLE_FONT="${CONSOLE_FONT:-/usr/share/consolefonts/Lat7-Terminus16.psf.gz}"
+JOYLED_HOME_FILE="${JOYLED_HOME_FILE:-/home/ark/.joyled}"
 
 # 设备与 GPIO/UART（mcu_led 后端）
 UART_DEV="${UART_DEV:-/dev/ttyS2}"
@@ -84,6 +85,64 @@ fatal_missing_backend() {
   fi
   printf "\e[?25h" > "$CURR_TTY"
   exit 0
+}
+
+delete_home_state() {
+  rm -f "$JOYLED_HOME_FILE" 2>/dev/null || true
+}
+
+write_home_state() {
+  # 写入：MODEL=... \n COLOR=...
+  # 尽量保证 ark 用户可读
+  local color="$1"
+  if [[ "$color" == "off" || "$color" == "OFF" ]]; then
+    delete_home_state
+    return 0
+  fi
+  local dir; dir="$(dirname "$JOYLED_HOME_FILE")"
+  mkdir -p "$dir" 2>/dev/null || true
+
+  local tmp
+  tmp="$(mktemp /tmp/.joyled.XXXXXX)"
+  {
+    echo "MODEL=${MODEL}"
+    echo "COLOR=${color}"
+  } > "$tmp"
+
+  # install 优先（可直接设权限/属主），失败就退回 cp+chown
+  if command -v install >/dev/null 2>&1; then
+    install -m 0644 -o ark -g ark "$tmp" "$JOYLED_HOME_FILE" 2>/dev/null || {
+      cp -f "$tmp" "$JOYLED_HOME_FILE" 2>/dev/null || true
+      chown ark:ark "$JOYLED_HOME_FILE" 2>/dev/null || true
+      chmod 0644 "$JOYLED_HOME_FILE" 2>/dev/null || true
+    }
+  else
+    cp -f "$tmp" "$JOYLED_HOME_FILE" 2>/dev/null || true
+    chown ark:ark "$JOYLED_HOME_FILE" 2>/dev/null || true
+    chmod 0644 "$JOYLED_HOME_FILE" 2>/dev/null || true
+  fi
+  rm -f "$tmp" 2>/dev/null || true
+}
+
+read_home_color() {
+  # 从 /home/ark/.joyled 读取 COLOR=xxx
+  # 输出：echo color
+  [ -r "$JOYLED_HOME_FILE" ] || return 1
+  local line
+  line="$(grep -E '^COLOR=' "$JOYLED_HOME_FILE" 2>/dev/null | tail -n 1 || true)"
+  [ -n "$line" ] || return 1
+  echo "${line#COLOR=}"
+}
+
+apply_choice_quiet() {
+  # 非交互：尽量不弹 dialog（失败返回非 0）
+  local c="$1"
+  case "$BACKEND" in
+    mcu_led) apply_choice_mcu "$c" ;;
+    gpio)    apply_choice_mymini "$c" ;;
+    ws2812)  apply_choice_ws2812 "$c" ;;
+    *)       return 1 ;;
+  esac
 }
 
 # 启动前后端自检：缺失即提示并退出
@@ -229,6 +288,7 @@ apply_choice_mcu() {
     ensure_gpio
     gpio_off
     set_kv led.color "$name"
+    write_home_state "$name" || true
     mkdir -p "$STATE_DIR" && : > "$STATE_FILE" 2>/dev/null || true
     return 0
   fi
@@ -244,6 +304,7 @@ apply_choice_mcu() {
 
   if run_mcu_led "$code"; then
     set_kv led.color "$name"
+    write_home_state "$name" || true
     mkdir -p "$STATE_DIR"; echo "$name" | sudo tee "$STATE_FILE" >/dev/null || true
   else
     dialog --msgbox "Failed to apply: $name (code $code)" 6 48 > "$CURR_TTY"
@@ -299,6 +360,7 @@ apply_choice_mymini() {
   esac
 
   set_kv led.color "$name"
+  write_home_state "$name" || true
   mkdir -p "$STATE_DIR"; echo "$name" | sudo tee "$STATE_FILE" >/dev/null || true
 
   return 0
@@ -399,6 +461,7 @@ apply_choice_ws2812() {
 
   # 走到这里视为成功，不阻塞 UI
   set_kv led.color "$name"
+  write_home_state "$name" || true
   mkdir -p "$STATE_DIR"; echo "$name" | sudo tee "$STATE_FILE" >/dev/null || true
   return 0
 }
@@ -450,6 +513,34 @@ fi
 
 # 二进制缺失：提示后退出
 backend_precheck
+
+# -----------------------
+# CLI quick apply / set
+# -----------------------
+if [[ "${1:-}" == "--apply" ]]; then
+  c="$(read_home_color || true)"
+  if [[ -z "${c:-}" ]]; then
+    echo "No saved color found in: $JOYLED_HOME_FILE" > "$CURR_TTY"
+    exit 1
+  fi
+  apply_choice_quiet "$c"
+  exit $?
+fi
+
+if [[ "${1:-}" == "--set" ]]; then
+  c="${2:-}"
+  if [[ -z "$c" ]]; then
+    echo "Usage: $0 --set <color>" > "$CURR_TTY"
+    exit 1
+  fi
+  # 先应用，成功再写入文件（避免写了但没生效）
+  apply_choice_quiet "$c"
+  rc=$?
+  if [[ $rc -eq 0 ]]; then
+    write_home_state "$c" || true
+  fi
+  exit $rc
+fi
 
 # -----------------------
 # Main Menu

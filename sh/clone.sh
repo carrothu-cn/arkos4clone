@@ -4,6 +4,8 @@ set -euo pipefail
 # =============== 路径配置（可按需调整）===============
 QUIRKS_DIR="/home/ark/.quirks"     # 目标机型库
 CONSOLE_FILE="/boot/.console"      # 当前生效机型标记
+JOYLED_FILE="/home/ark/.joyled"    # joyled配置记录
+JOYLED_BIN="/opt/system/Clone/joyled.sh"
 
 # =============== 小工具函数（英文输出 / 中文注释）===============
 LOG_FILE="/boot/clone_log.txt"
@@ -12,6 +14,7 @@ LOG_FILE="/boot/clone_log.txt"
 msg()  { echo "[clone.sh] $*" | tee -a "$LOG_FILE"; }
 warn() { echo "[clone.sh][WARN] $*" | tee -a "$LOG_FILE" >&2; }
 err()  { echo "[clone.sh][ERR ] $*" | tee -a "$LOG_FILE" >&2; }
+have_cmd() { command -v "$1" >/dev/null 2>&1; }
 
 # =============== OTA：开机自动检测并执行 /roms/update.tar ===============
 maybe_apply_ota_update() {
@@ -132,6 +135,48 @@ maybe_apply_ota_update() {
 # 读当前 .console 内容，小工具函数，避免重复
 get_console_label() {
   tr -d '\r\n' < "$CONSOLE_FILE" 2>/dev/null || true
+}
+
+get_joyled_model() {
+  [[ -r "$JOYLED_FILE" ]] || return 1
+  local line
+  line="$(grep -E '^MODEL=' "$JOYLED_FILE" 2>/dev/null | tail -n 1 || true)"
+  [[ -n "$line" ]] || return 1
+  echo "${line#MODEL=}"
+}
+
+apply_joyled_if_match() {
+  # 只在机型匹配时应用，且失败不影响开机
+  if [[ -x "$JOYLED_BIN" ]]; then
+    msg "Applying saved joyled via: $JOYLED_BIN --apply"
+    bash "$JOYLED_BIN" --apply >>"$LOG_FILE" 2>&1 || warn "joyled --apply failed"
+  else
+    warn "joyled binary not found or not executable: $JOYLED_BIN"
+  fi
+}
+
+joyled_boot_flow() {
+  [[ -f "$JOYLED_FILE" ]] || return 0
+
+  local saved
+  saved="$(get_joyled_model || true)"
+
+  # 文件坏了：删
+  if [[ -z "${saved:-}" ]]; then
+    warn "joyled file exists but MODEL missing, removing: $JOYLED_FILE"
+    rm -f "$JOYLED_FILE" 2>/dev/null || true
+    return 0
+  fi
+
+  # 机型不一致：删
+  if [[ "$saved" != "$LABEL" ]]; then
+    msg "joyled model mismatch: saved=$saved current=$LABEL -> removing $JOYLED_FILE"
+    rm -f "$JOYLED_FILE" 2>/dev/null || true
+    return 0
+  fi
+
+  # 机型一致：应用
+  apply_joyled_if_match
 }
 
 # 先读取已有 .console，r36s作为默认机型
@@ -658,6 +703,6 @@ fi
 if [[ -x /home/ark/.config/lastgame.sh ]]; then
   sudo -u ark /home/ark/.config/lastgame.sh
 fi
-
+joyled_boot_flow
 msg "Done. LABEL=$LABEL, CONSOLE_FILE=$(get_console_label)"
 exit 0
