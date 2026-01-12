@@ -165,6 +165,7 @@ sudo cp -r "./replace_file/tools/Enable Quick Mode.sh" "$MOUNT_DIR/root/usr/loca
 sudo cp -r "./replace_file/tools/Disable Quick Mode.sh" "$MOUNT_DIR/root/usr/local/bin/" 2>/dev/null || true
 sudo cp -r "./replace_file/tools/Switch to main SD for Roms.sh" "$MOUNT_DIR/root/usr/local/bin/" 2>/dev/null || true
 sudo cp -r "./replace_file/tools/Switch to SD2 for Roms.sh" "$MOUNT_DIR/root/usr/local/bin/" 2>/dev/null || true
+sudo cp -r "./replace_file/tools/SSH over OTG for ArkOS.sh" "$MOUNT_DIR/root/opt/system/" 2>/dev/null || true
 
 echo "== 删除logo随机 =="
 sudo sed -i '/imageshift\.sh/d' "$MOUNT_DIR/root/var/spool/cron/crontabs/root" 2>/dev/null || true
